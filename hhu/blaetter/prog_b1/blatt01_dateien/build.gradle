@@ -1,0 +1,134 @@
+apply plugin: 'java'
+
+sourceSets.main.java.srcDir('./src')
+sourceSets.test.java.srcDir('./src')
+
+repositories { 
+    mavenCentral(); 
+}
+
+dependencies {
+  compile "junit:junit:4.12"
+}
+
+def java(String x, String i = "") {
+  def arguments = x.split(" ")
+  def t = arguments.tail() as List
+  def ins = new ByteArrayInputStream(i.getBytes())
+
+  new ByteArrayOutputStream().withStream { os ->
+    javaexec {
+      main = arguments.head()
+      classpath = sourceSets.main.runtimeClasspath
+      args = t
+      standardOutput = os
+      standardInput = ins
+    }
+
+    os.toString();
+  }
+}
+
+ext {
+  java = this.&java
+}
+
+task testen_SimplePrint(dependsOn: ['compileJava'])  {
+	def newline = System.getProperty("line.separator")	
+	doLast {
+	   assert java('SimplePrint hallo welt') == "welt" + newline + "hallo" + newline
+           assert java('SimplePrint bar foo') == "foo" + newline + "bar" + newline
+   	}
+}
+
+task testen_SimplePrintln(dependsOn: ['compileJava'])  {
+	def newline = System.getProperty("line.separator")
+	doLast {
+	   assert java('SimplePrintln hallo welt') == "welt" + newline + "hallo" + newline
+       	   assert java('SimplePrintln bar foo') == "foo" + newline + "bar" + newline
+  	 }
+}
+
+task testen_Bughunt01(dependsOn: ['compileJava'])  {
+	doLast {
+		String a = java('Bughunt01 1')
+		String b = java('Bughunt01 0')
+
+		assert a.isDouble()
+		assert b.isDouble()
+
+		assert a.toDouble().round(6) == 1.050417
+		assert b.toDouble().round(6) == 0.0
+  	 }
+}
+
+task testen_Balistic(dependsOn: ['compileJava'])  {
+	doLast {
+		String a = java('Balistic 9.78033 0 1')
+		assert a.isDouble()
+		assert Math.abs(a.toDouble().round(5) - 4.89016) < 0.0001
+
+		a = java('Balistic 0 100 1')
+		assert a.isDouble()
+		assert Math.abs(a.toDouble().round(5) - 95.10983) < 0.0001
+
+		a = java('Balistic 0 100 2')
+		assert a.isDouble()
+		assert Math.abs(a.toDouble().round(5) - 180.43934) < 0.0001
+
+		a = java('Balistic 0 100 3')
+		assert a.isDouble()
+		assert Math.abs(a.toDouble().round(5) - 255.98851) < 0.0001
+
+		a = java('Balistic 0 10 3.5')
+		assert a.isDouble()
+		assert Math.abs(a.toDouble().round(5) - -24.90452) < 0.0001
+  	 }
+}
+
+task testen_RandomNumber(dependsOn: ['compileJava'])  {
+	doLast {
+		for (int i = 0; i < 100; i++) {
+			int num = Math.abs(Math.random() * 100)
+			int num2 = num + Math.abs(Math.random() * 10)
+
+			String a = java("RandomNumber " + num + " " + num2)
+			assert a.isInteger()
+			assert a.toInteger() >= num && a.toInteger() <= num2
+		}
+   	}
+}
+
+task testen_RGBtoCMYK(dependsOn: ['compileJava'])  {
+	doLast {
+		String a = java('RGBtoCMYK 0 90 90')
+
+                if (a.contains("(") && a.contains(")")){
+                        a = a[a.indexOf("(")+1..a.indexOf(")")-1]
+                }
+		String[] arr = a.split(',')
+		assert arr.length == 4
+
+		for (int i = 0; i < arr.length; i++) {
+			assert arr[i].isDouble()
+		}
+
+		assert arr[0].toDouble() == 1.0 && arr[1].toDouble() == 0.0 && arr[2].toDouble() == 0.0 && Math.abs(arr[3].toDouble().round(5) - 0.64705) < 0.0001
+
+		a = java('RGBtoCMYK 0 180 360')
+                if (a.contains("(") && a.contains(")")){
+                        a = a[a.indexOf("(")+1..a.indexOf(")")-1]
+                }
+		arr = a.split(',')
+
+		assert arr.length == 4
+
+		for (int i = 0; i < arr.length; i++) {
+			assert arr[i].isDouble()
+		}
+
+		assert arr[0].toDouble() == 1.0 && arr[1].toDouble() == 0.5 && arr[2].toDouble() == 0.0 && Math.abs(arr[3].toDouble().round(5) - -0.41176) < 0.0001
+   }
+}
+
+

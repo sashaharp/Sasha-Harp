@@ -1,0 +1,47 @@
+apply plugin: 'java'
+
+sourceSets.main.java.srcDir('./src')
+sourceSets.test.java.srcDir('./src')
+
+repositories { 
+    mavenCentral(); 
+}
+
+dependencies {
+  compile "junit:junit:4.12"
+}
+
+def java(String x, String i = "") {
+  def arguments = x.split(" ")
+  def t = arguments.tail() as List
+  def ins = new ByteArrayInputStream(i.getBytes())
+
+  new ByteArrayOutputStream().withStream { os ->
+    javaexec {
+      main = arguments.head()
+      classpath = sourceSets.main.runtimeClasspath
+      args = t
+      standardOutput = os
+      standardInput = ins
+    }
+
+    os.toString();
+  }
+}
+
+ext {
+  java = this.&java
+}
+
+task testen(dependsOn: ['compileJava'])  {
+	def newline = System.getProperty("line.separator")
+	doLast {
+		assert java('Plateau') == "ERROR" + newline
+		assert java('Plateau 1 2 3') == "Laenge: 0" + newline + "Index: -1" + newline
+		assert java('Plateau 102 332 412 2 2 1 4 8 10 13 120 9999') == "Laenge: 1" + newline + "Index: 2" + newline
+		assert java('Plateau 1 2 3 4 4 4 4 3 2 1') == "Laenge: 4" + newline + "Index: 3" + newline
+		assert java('Plateau 999 3 2 1 8 3 8 2 2 2 1 2 2 2 1') == "Laenge: 3" + newline + "Index: 11" + newline
+   }
+}
+
+

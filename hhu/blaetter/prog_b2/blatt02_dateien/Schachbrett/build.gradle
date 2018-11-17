@@ -1,0 +1,77 @@
+apply plugin: 'java'
+
+sourceSets.main.java.srcDir('./src')
+sourceSets.test.java.srcDir('./src')
+
+repositories { 
+    mavenCentral(); 
+}
+
+dependencies {
+  compile "junit:junit:4.12"
+}
+
+def java(String x, String i = "") {
+  def arguments = x.split(" ")
+  def t = arguments.tail() as List
+  def ins = new ByteArrayInputStream(i.getBytes())
+
+  new ByteArrayOutputStream().withStream { os ->
+    javaexec {
+      main = arguments.head()
+      classpath = sourceSets.main.runtimeClasspath
+      args = t
+      standardOutput = os
+      standardInput = ins
+    }
+
+    os.toString();
+  }
+}
+
+ext {
+  java = this.&java
+}
+
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
+task testen(dependsOn: ['compileJava'])  {
+	def newline = System.getProperty("line.separator")	
+	doLast {
+		assert java("Schachbrett -1") == "ERROR" + newline
+
+		for (int i = 1; i < 20; i++) {
+			String out = java("Schachbrett " + i)
+
+			if (i == 1) {
+				assert out == "*" + newline
+			} else {
+				String[] lines = out.split(newline)
+				assert lines.length == i
+
+				for (int j = 0; j < i; j++) {
+					String str = lines[j].replaceAll(" ", "a").replaceAll("\\*", "b");
+
+					Pattern reg
+					if (j % 2 == 0) {
+						if (i % 2 == 0) {
+							reg = Pattern.compile("ba+");
+						} else {
+							reg = Pattern.compile("ba+b");
+						}
+					} else {
+						if (i % 2 == 0) {
+							reg = Pattern.compile("ab+");
+						} else {
+							reg = Pattern.compile("ab+a");
+						}
+					}
+
+					Matcher m = reg.matcher(str);
+					assert m.find()
+				}
+			}
+		}
+   	}
+}

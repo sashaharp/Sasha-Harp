@@ -1,0 +1,15 @@
+
+# Bughunt03 Lösung
+# Sie dürfen natürlich die Satzanfänge auch ändern.
+
+
+1) zeile 15: bei rechenoperationen mit double werden rundungsfehler zugelassen, 
+    desshalb sollte man nicht ablosute genauigkeit erwarten, sondern <= oder >= benutzen.
+
+
+2) zeile 23: Double hat einen maximalen Wert "Infinity". 
+    In faellen wo groesere Zahlen erwartet werden sollte man BigDecimal benutzen.
+
+
+
+3) Ich habe aus den beiden Schleifen gelernt: double ist unpraezise und in seinen Werten begrenzt.

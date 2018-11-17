@@ -1,0 +1,36 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - CounterEuler",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "CounterEuler",
+            "args": "",
+            "projectName": "CounterEuler"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Schachbrett",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "Schachbrett",
+            "args": "10",
+            "projectName": "Schachbrett"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Bughunt03",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "Bughunt03",
+            "args": "2"
+        }
+    ]
+}
