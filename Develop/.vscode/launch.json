@@ -1,0 +1,15 @@
+{
+    "configurations": [
+
+        {
+            "type": "python",
+            "name": "plan.py",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "",
+            "args": ""
+        }
+    ]
+}
