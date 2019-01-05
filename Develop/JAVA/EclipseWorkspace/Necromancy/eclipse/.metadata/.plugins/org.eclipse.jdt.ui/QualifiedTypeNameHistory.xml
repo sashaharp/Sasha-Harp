@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="net.minecraftforge.fml.common.Mod"/>
+    <fullyQualifiedTypeName name="com.DragonGamingXXL.Necromancy.util.Reference"/>
+    <fullyQualifiedTypeName name="net.minecraftforge.fml.common.Mod.Instance"/>
+    <fullyQualifiedTypeName name="net.minecraftforge.fml.common.Mod.EventHandler"/>
+    <fullyQualifiedTypeName name="net.minecraftforge.fml.common.event.FMLPreInitializationEvent"/>
+    <fullyQualifiedTypeName name="net.minecraftforge.fml.common.event.FMLInitializationEvent"/>
+    <fullyQualifiedTypeName name="net.minecraftforge.fml.common.event.FMLPostInitializationEvent"/>
+    <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="net.minecraft.creativetab.CreativeTabs"/>
+    <fullyQualifiedTypeName name="com.DragonGamingXXL.Necromancy.Main"/>
+    <fullyQualifiedTypeName name="net.minecraftforge.client.model.ModelLoader"/>
+    <fullyQualifiedTypeName name="net.minecraft.client.renderer.block.model.ModelResourceLocation"/>
+    <fullyQualifiedTypeName name="net.minecraftforge.fml.common.Mod.EventBusSubscriber"/>
+    <fullyQualifiedTypeName name="net.minecraftforge.event.RegistryEvent"/>
+    <fullyQualifiedTypeName name="net.minecraftforge.event.RegistryEvent.Register"/>
+    <fullyQualifiedTypeName name="net.minecraft.item.Item"/>
+    <fullyQualifiedTypeName name="net.minecraftforge.fml.common.eventhandler.SubscribeEvent"/>
+    <fullyQualifiedTypeName name="com.DragonGamingXXL.Necromancy.init.ModItems"/>
+    <fullyQualifiedTypeName name="net.minecraftforge.client.event.ModelRegistryEvent"/>
+    <fullyQualifiedTypeName name="com.DragonGamingXXL.Necromancy.util.IHasModel"/>
+    <fullyQualifiedTypeName name="com.DragonGamingXXL.Necromancy.proxy.CommonProxy"/>
+    <fullyQualifiedTypeName name="net.minecraftforge.fml.common.SidedProxy"/>
+    <fullyQualifiedTypeName name="com.DragonGamingXXL.Necromancy.items.ItemBase"/>
+</qualifiedTypeNameHistroy>

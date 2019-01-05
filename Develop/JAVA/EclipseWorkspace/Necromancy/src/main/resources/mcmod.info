@@ -1,0 +1,16 @@
+[
+{
+  "modid": "necrom",
+  "name": "Necromancy",
+  "description": "A mod for Necromancy",
+  "version": "0.1b",
+  "mcversion": "1.12.2",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["DragonGamingXXL"],
+  "credits": "Alexandra Lisina, a wonderful writer!",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

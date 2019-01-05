@@ -1,0 +1,8 @@
+package com.DragonGamingXXL.Necromancy.init;
+
+public class ModRecipes {
+	public static void init()
+	{
+		
+	}
+}

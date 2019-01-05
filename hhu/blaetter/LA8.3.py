@@ -10,7 +10,9 @@ def lepoit(n, x):
         for k in range(2, n+1):
             t = np.array(op)
             op = np.array(o)
-            o = np.array(np.append(o, 0)*(2*k-1)/(k) - np.append((t*(k-1)/(k))[::-1], [0, 0])[::-1])
+            #print(np.append((t*(k-1)/(k))[::-1], [0, 0])[::-1])
+            o = np.array((np.append(o, 0)*(2*k-1)/k) - (np.append((t*(k-1)/(k))[::-1], [0, 0])[::-1]))
+        #print(o)
     return sum([o[::-1][k]*x**k for k in range(0, len(o))])
 
 def lepore(n, x):
@@ -21,15 +23,15 @@ def lepore(n, x):
         return x
     return x*lepore(n-1, x)*(2*n-1)/n - lepore(n-2, x)*(n-1)/n
 
-print(lepoit(0, 4))
-print(lepoit(1, 4))
-print(lepoit(2, 4))
-print(lepoit(3, 4))
+print(lepoit(0, 4.0))
+print(lepoit(1, 4.0))
+print(lepoit(2, 4.0))
+print(lepoit(3, 4.0))
 
-print(lepore(0, 4))
-print(lepore(1, 4))
-print(lepore(2, 4))
-print(lepore(3, 4))
+print(lepore(0, 4.0))
+print(lepore(1, 4.0))
+print(lepore(2, 4.0))
+print(lepore(3, 4.0))
 
 x = np.linspace(-1, 1, 50)
 

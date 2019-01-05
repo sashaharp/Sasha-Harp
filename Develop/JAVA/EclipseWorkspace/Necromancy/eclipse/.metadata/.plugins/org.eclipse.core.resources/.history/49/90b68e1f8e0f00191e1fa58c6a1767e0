@@ -1,0 +1,5 @@
+package com.DragonGamingXXL.Necromancy;
+@Mod()
+public class Main {
+
+}

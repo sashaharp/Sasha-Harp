@@ -4,6 +4,8 @@ def mydet(A):
     assert A.shape[0] == A.shape[1], "Die Matrix ist nicht quadratisch"
     if(A.shape == (2, 2)):
         return A[0, 0]*A[1, 1]-A[0, 1]*A[1, 0]
+    if(A.shape == (1, 1)):
+        return A[0, 0]
     return sum([A[0, i]*(-1)**(i+1)*mydet(np.concatenate((A[1::,:i:], A[1::,i+1::]), axis=1)) for i in range(0, A.shape[0])])
 
 #print(mydet(np.ones(4).reshape(2,2)))
