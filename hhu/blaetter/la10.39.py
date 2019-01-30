@@ -215,26 +215,26 @@ def SProdKoeff(p, q):
     q = q.conjugate()
     return sqrt(sum([p.dp.get(n, 0)*q.conjugate().dp.get(n, 0) for n in set(p.dp).union(set(q.dp))]))
 
-def lagrange(*c):
+def lagrange(*c): # * mehrere inputs
     l = []
-    for i in range(len(c)):
-        temp = Polynom(1)
-        for j in range(len(c)):
+    for i in range(len(c)): 
+        temp = Polynom(1) 
+        for j in range(len(c)): #unser fettes produkt
             if(i!=j):
-                temp *= Polynom({1: 1/(c[i]-c[j]), 0: c[i]/(c[i]-c[j])})
+                temp *= Polynom({1: 1/(c[i]-c[j]), 0: c[i]/(c[i]-c[j])}) #temp mult mit langrange poly
         l.append(temp)
-    return l
+    return l # tadaaaa unsere tolle polyreihe
 
-def getC(n):
-    return [numpy.cos((2*j+1)*numpy.pi/(2*(n+1))) for j in range(n+1)]
+def getC(n): #jz b
+    return [numpy.cos((2*j+1)*numpy.pi/(2*(n+1))) for j in range(n+1)] 
 
 c=getC(6)
-ls = lagrange(c[0], c[1], c[2], c[3], c[4], c[5], c[6])
+ls = lagrange(c[0], c[1], c[2], c[3], c[4], c[5], c[6]) #laiste der lagrangedinger
 
-fig = plt.figure()
-ax = fig.add_subplot(111)
+fig = plt.figure() 
+ax = fig.add_subplot(111) #fur ein grosses bild
 
-for l in ls:
+for l in ls: #aus der polyklasse
     l.plot(fig, ax, -1, 1, 100, "")
 
 plt.show()
