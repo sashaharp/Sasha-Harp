@@ -29,14 +29,24 @@ print("x:", x)
 def QR_kompakt(A):
     ''' Berechnet die QR-Zerlegung der Matrix Aâ‚¬R^{mxn}
     Input: Matrix A
-    Output: alphas, neues Array mit vs und teilweise R
+    Output: alphas, neues Array mit vs und teilweis#algo
+A = np.vstack([np.exp(t), np.exp(-1*t), t**2, np.ones(len(t))]).T
+
+x = la.solve(A.T@A, A.T@f)
+
+print("x:", x)
     '''
     V = A.astype('float').copy()
     m, n = A.shape
     alphas = np.zeros(n)
     for k in range(n):
         u = V[k:, [k]] 
-        alpha = -np.sign(V[k, k])*np.linalg.norm(u)
+        alpha = -np.sign(V[k, k])*np.linalg.norm(u)#algo
+A = np.vstack([np.exp(t), np.exp(-1*t), t**2, np.ones(len(t))]).T
+
+x = la.solve(A.T@A, A.T@f)
+
+print("x:", x)
         if alpha == 0:
             alpha = -np.linalg.norm(u)
         alphas[k] = alpha
