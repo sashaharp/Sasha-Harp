@@ -1,0 +1,8 @@
+/home/sashaharp/Documents/git/Sasha-Harp/Develop/python/server/test/testEto/testEto/bin/Release/netstandard1.6/testEto.deps.json
+/home/sashaharp/Documents/git/Sasha-Harp/Develop/python/server/test/testEto/testEto/bin/Release/netstandard1.6/testEto.dll
+/home/sashaharp/Documents/git/Sasha-Harp/Develop/python/server/test/testEto/testEto/bin/Release/netstandard1.6/testEto.pdb
+/home/sashaharp/Documents/git/Sasha-Harp/Develop/python/server/test/testEto/testEto/obj/Release/netstandard1.6/testEto.csproj.CoreCompileInputs.cache
+/home/sashaharp/Documents/git/Sasha-Harp/Develop/python/server/test/testEto/testEto/obj/Release/netstandard1.6/testEto.AssemblyInfoInputs.cache
+/home/sashaharp/Documents/git/Sasha-Harp/Develop/python/server/test/testEto/testEto/obj/Release/netstandard1.6/testEto.AssemblyInfo.cs
+/home/sashaharp/Documents/git/Sasha-Harp/Develop/python/server/test/testEto/testEto/obj/Release/netstandard1.6/testEto.dll
+/home/sashaharp/Documents/git/Sasha-Harp/Develop/python/server/test/testEto/testEto/obj/Release/netstandard1.6/testEto.pdb
