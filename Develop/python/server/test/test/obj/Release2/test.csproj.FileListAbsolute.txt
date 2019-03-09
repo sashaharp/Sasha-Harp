@@ -1,0 +1,3 @@
+/home/sashaharp/Documents/git/Sasha-Harp/Develop/python/server/test/test/bin/Release2/test.exe
+/home/sashaharp/Documents/git/Sasha-Harp/Develop/python/server/test/test/obj/Release2/test.csproj.CoreCompileInputs.cache
+/home/sashaharp/Documents/git/Sasha-Harp/Develop/python/server/test/test/obj/Release2/test.exe

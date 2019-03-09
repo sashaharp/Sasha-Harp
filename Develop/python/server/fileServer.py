@@ -14,7 +14,7 @@ while True:
         if not data:
             break
         # write data to a file
-        with open('Data\\file.txt', 'wb') as f:
+        with open('Data\\test.txt', 'wb') as f:
             f.write(data)
 
 f.close()
