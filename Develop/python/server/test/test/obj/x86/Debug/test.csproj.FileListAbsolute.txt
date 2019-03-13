@@ -1,0 +1,6 @@
+/home/sashaharp/Documents/git/Sasha-Harp/Develop/python/server/test/test/bin/Debug/test.exe
+/home/sashaharp/Documents/git/Sasha-Harp/Develop/python/server/test/test/bin/Debug/test.pdb
+/home/sashaharp/Documents/git/Sasha-Harp/Develop/python/server/test/test/obj/x86/Debug/test.csprojAssemblyReference.cache
+/home/sashaharp/Documents/git/Sasha-Harp/Develop/python/server/test/test/obj/x86/Debug/test.csproj.CoreCompileInputs.cache
+/home/sashaharp/Documents/git/Sasha-Harp/Develop/python/server/test/test/obj/x86/Debug/test.exe
+/home/sashaharp/Documents/git/Sasha-Harp/Develop/python/server/test/test/obj/x86/Debug/test.pdb

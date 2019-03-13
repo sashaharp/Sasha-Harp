@@ -8,13 +8,13 @@ s.listen(3)
 
 while True:
     conn, addr = s.accept()
-    with open('Data/file.txt', 'wb') as f:
-        while True:
-            print('receiving data...')
-            data = conn.recv(1024)
-            if not data:
-                break
-            # write data to a file
+    while True:
+        print('receiving data...')
+        data = s.recv(16384)
+        if not data:
+            break
+        # write data to a file
+        with open('Data\\file.txt', 'wb') as f:
             f.write(data)
 
     f.close()
