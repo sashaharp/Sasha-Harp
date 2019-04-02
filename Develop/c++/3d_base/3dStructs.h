@@ -127,10 +127,12 @@ Vector vectMul (Vector a, Matrix m) {
     Vector v = vect((m.m11*a.x + m.m12*a.y + m.m13*a.z + m.m14*a.w)/w,
                     (m.m21*a.x + m.m22*a.y + m.m23*a.z + m.m24*a.w)/w,
                     (m.m31*a.x + m.m32*a.y + m.m33*a.z + m.m34*a.w)/w);
+    v.len = sqrt(v.x*v.x+v.y*v.y+v.z*v.z);          
     return v;
 }
 
 Vertex vertMul (Vertex a, Matrix m) {
     Vertex v = vert(vectMul(a.v1, m), vectMul(a.v2, m), vectMul(a.v3, m));
+    v.order = (v.v1.len+v.v2.len+v.v3.len)/3;
     return v;
 }
