@@ -1,18 +1,17 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include "TextureStruct.h"
 
 typedef struct _Vector {
     double x;
     double y;
     double z;
     double w;
-    double len;
 } Vector;
 
 Vector vect(double x, double y, double z) {
-    double l = sqrt(x*x+y*y+z*z);
-    Vector v = {.x = x, .y = y, .z = z, .w = 1, .len = l};
+    Vector v = {.x = x, .y = y, .z = z, .w = 1};
     return v;
 }
 
@@ -20,12 +19,11 @@ typedef struct _Vertex {
     Vector v1;
     Vector v2;
     Vector v3;
-    double order;
+	Texture col;
 } Vertex;
 
-Vertex vert(Vector v1, Vector v2, Vector v3) {
-    double o = (v1.len+v2.len+v3.len)/3;
-    Vertex v = {.v1 = v1, .v2 = v2, .v3 = v3, .order = o};
+Vertex vert(Vector v1, Vector v2, Vector v3, Texture t) {
+    Vertex v = {.v1 = v1, .v2 = v2, .v3 = v3, .col = t};
     return v;
 }
 
@@ -89,35 +87,35 @@ Matrix translate (double x, double y, double z) {
     return m;
 }
 
-Matrix perspective (double fovX, double fovY, double far, double near) {
+Matrix perspective (double fovX, double fovY, double fa, double ne) {
     double Sx = 1/tan(fovX*M_PI/360);
     double Sy = 1/tan(fovY*M_PI/360);
     Matrix m = {.m11 = Sx, .m12 = 0, .m13 = 0, .m14 = 0,
                 .m21 = 0, .m22 = Sy, .m23 = 0, .m24 = 0,
-                .m31 = 0, .m32 = 0, .m33 = -far/(far-near), .m34 = -1,
-                .m41 = 0, .m42 = 0, .m43 = -far*near/(far-near), .m44 = 0};
+                .m31 = 0, .m32 = 0, .m33 = -fa/(fa-ne), .m34 = -1,
+                .m41 = 0, .m42 = 0, .m43 = -fa*ne/(fa-ne), .m44 = 0};
     return m;
 }
 
 Matrix matMul (Matrix a, Matrix b) {
     Matrix m = {a.m11*b.m11 + a.m12*b.m21 + a.m13*b.m31 + a.m14*b.m41,
-                a.m11*b.m11 + a.m12*b.m21 + a.m13*b.m31 + a.m14*b.m41,
-                a.m11*b.m11 + a.m12*b.m21 + a.m13*b.m31 + a.m14*b.m41,
-                a.m11*b.m11 + a.m12*b.m21 + a.m13*b.m31 + a.m14*b.m41,
+                a.m11*b.m12 + a.m12*b.m22 + a.m13*b.m32 + a.m14*b.m42,
+                a.m11*b.m13 + a.m12*b.m23 + a.m13*b.m33 + a.m14*b.m43,
+                a.m11*b.m14 + a.m12*b.m24 + a.m13*b.m34 + a.m14*b.m44,
                 
+                a.m21*b.m11 + a.m22*b.m21 + a.m23*b.m31 + a.m24*b.m41,
                 a.m21*b.m12 + a.m22*b.m22 + a.m23*b.m32 + a.m24*b.m42,
-                a.m21*b.m12 + a.m22*b.m22 + a.m23*b.m32 + a.m24*b.m42,
-                a.m21*b.m12 + a.m22*b.m22 + a.m23*b.m32 + a.m24*b.m42,
-                a.m21*b.m12 + a.m22*b.m22 + a.m23*b.m32 + a.m24*b.m42,
+                a.m21*b.m13 + a.m22*b.m23 + a.m23*b.m33 + a.m24*b.m43,
+                a.m21*b.m14 + a.m22*b.m24 + a.m23*b.m34 + a.m24*b.m44,
                 
+                a.m31*b.m11 + a.m32*b.m21 + a.m33*b.m31 + a.m34*b.m41,
+                a.m31*b.m12 + a.m32*b.m22 + a.m33*b.m32 + a.m34*b.m42,
                 a.m31*b.m13 + a.m32*b.m23 + a.m33*b.m33 + a.m34*b.m43,
-                a.m31*b.m13 + a.m32*b.m23 + a.m33*b.m33 + a.m34*b.m43,
-                a.m31*b.m13 + a.m32*b.m23 + a.m33*b.m33 + a.m34*b.m43,
-                a.m31*b.m13 + a.m32*b.m23 + a.m33*b.m33 + a.m34*b.m43,
+                a.m31*b.m14 + a.m32*b.m24 + a.m33*b.m34 + a.m34*b.m44,
                 
-                a.m41*b.m14 + a.m42*b.m24 + a.m43*b.m34 + a.m44*b.m44,
-                a.m41*b.m14 + a.m42*b.m24 + a.m43*b.m34 + a.m44*b.m44,
-                a.m41*b.m14 + a.m42*b.m24 + a.m43*b.m34 + a.m44*b.m44,
+                a.m41*b.m11 + a.m42*b.m21 + a.m43*b.m31 + a.m44*b.m41,
+                a.m41*b.m12 + a.m42*b.m22 + a.m43*b.m32 + a.m44*b.m42,
+                a.m41*b.m13 + a.m42*b.m23 + a.m43*b.m33 + a.m44*b.m43,
                 a.m41*b.m14 + a.m42*b.m24 + a.m43*b.m34 + a.m44*b.m44};
     return m;
 }
@@ -126,13 +124,11 @@ Vector vectMul (Vector a, Matrix m) {
     double w = m.m41*a.x + m.m42*a.y + m.m43*a.z + m.m44*a.w;
     Vector v = vect((m.m11*a.x + m.m12*a.y + m.m13*a.z + m.m14*a.w)/w,
                     (m.m21*a.x + m.m22*a.y + m.m23*a.z + m.m24*a.w)/w,
-                    (m.m31*a.x + m.m32*a.y + m.m33*a.z + m.m34*a.w)/w);
-    v.len = sqrt(v.x*v.x+v.y*v.y+v.z*v.z);          
+                    (m.m31*a.x + m.m32*a.y + m.m33*a.z + m.m34*a.w)/w); 
     return v;
 }
 
 Vertex vertMul (Vertex a, Matrix m) {
-    Vertex v = vert(vectMul(a.v1, m), vectMul(a.v2, m), vectMul(a.v3, m));
-    v.order = (v.v1.len+v.v2.len+v.v3.len)/3;
+    Vertex v = vert(vectMul(a.v1, m), vectMul(a.v2, m), vectMul(a.v3, m), a.col);
     return v;
 }
