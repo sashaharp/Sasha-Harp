@@ -14,22 +14,13 @@ int numVerts;
 Matrix camera;
 Matrix pers;
 
-int compVerts (const void *elem1, const void *elem2) {
-    if ((*((Vertex *)elem1)).order > (*((Vertex *)elem2)).order) {
-        return 1;
-    }
-    if ((*((Vertex *)elem1)).order < (*((Vertex *)elem2)).order) {
-        return -1;
-    }
-    return 0;
-}
-
 Object *obj_init(Vertex *t, Matrix w, int tLen) {
     Object *o = malloc(sizeof(Object));
     *o = (Object){._triangles=t, .triangles=NULL, .numTri=tLen, .World=w};
     (*o).triangles = malloc(sizeof(Vertex)*tLen);
-    (*o).triangles = (Vertex *)memcpy((*o).triangles, (*o)._triangles, sizeof(Vertex)*tLen);
-    (*o).numTri = tLen;
+	for(int n = 0; n < tLen; n++) {
+		*((*o).triangles+n) = vertMul(*((*o)._triangles+n), w);
+	}
     objs = (Object *)realloc(objs, sizeof(Object)*(numObjs+1));
     *(objs+numObjs) = (*o);
     numObjs++;
@@ -38,7 +29,6 @@ Object *obj_init(Vertex *t, Matrix w, int tLen) {
         *(verts+numVerts+n) = *((*o).triangles+n);
     }
     numVerts += tLen;
-    qsort(verts, numVerts, sizeof(Vertex), compVerts);
     return o;
 }
 
@@ -47,9 +37,8 @@ void applyTransform(Object o, Matrix m) {
     for(int n = 0; n < o.numTri; n++) {
         *(o.triangles+n) = vertMul(*(o._triangles+n), o.World);
     }
-    qsort(verts, numVerts, sizeof(Vertex), compVerts);
 }
-void Init3D(double screenRatio, double fov, double near, double far) {
-    camera = translate(0, 0, 0);
-    pers = perspective(fov, fov*screenRatio, far, near);
+void Init3D(double screenRatio, double fov, double ne, double fa) {
+    camera = translate(0, 0, -50);
+    pers = perspective(fov, fov*screenRatio, fa, ne);
 }
