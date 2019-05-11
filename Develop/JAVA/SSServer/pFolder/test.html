@@ -1,0 +1,113 @@
+HTTP/1.1 200 OK
+Server: Apache/1.3.29 (Unix) PHP/4.3.4
+Content-Length: 123456 (Größe von infotext.html in Byte)
+Content-Language: en_US (nach RFC 3282 sowie RFC 1766)
+Connection: close
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="-1">
+<head>
+<link rel="stylesheet" type="text/css" href="https://intern.apobank.de/_catalogs/theme/Themed/CDF40450/corev15-433D5376.themedcss?ctag=29"/>
+<link rel="stylesheet" type="text/css" href="https://intern.apobank.de/_catalogs/theme/Themed/CDF40450/searchv15-8AE2044B.themedcss?ctag=29"/>
+<link rel="stylesheet" type="text/css" href="https://intern.apobank.de/_layouts/15/1031/styles/WebTaggingUI.css?rev=xj9JkWxmR72vRyF%2FuguuIA%3D%3DTAG0"/>
+<link rel="stylesheet" type="text/css" href="https://intern.apobank.de/_catalogs/theme/Themed/CDF40450/portal-99375EEB.themedcss?ctag=29"/>
+<link rel="stylesheet" type="text/css" href="https://intern.apobank.de/_layouts/15/1031/styles/SuiteNav.css?rev=5z16wmEQxAYBXVqSZ%2BP0Lg%3D%3DTAG0"/>
+<link rel="stylesheet" type="text/css" href="https://intern.apobank.de/Style%20Library/apo/startseite.css"/>
+<link rel="stylesheet" type="text/css" href="https://intern.apobank.de/Style%20Library/apo/apocustom.css"/>
+<link rel="stylesheet" type="text/css" href="https://intern.apobank.de/Style%20Library/apo/nositetitle.css"/>
+<style>
+#option1 {
+  position: absolute;
+  left: 107px;
+  top: 240px;
+  z-index:1
+}
+#option2 {
+  position: absolute;
+  left: 107px;
+  top: 293px;
+  z-index:1
+}
+#option3 {
+  position: absolute;
+  left: 107px;
+  top: 346px;
+  z-index:1
+}
+#option4 {
+  position: absolute;
+  left: 107px;
+  top: 398px;
+  z-index:1
+}
+#option5 {
+  position: absolute;
+  left: 107px;
+  top: 519px;
+  z-index:1
+}
+#option6 {
+  position: absolute;
+  left: 107px;
+  top: 572px;
+  z-index:1
+}
+#option7 {
+  position: absolute;
+  left: 107px;
+  top: 625px;
+  z-index:1
+}
+#option8 {
+  position: absolute;
+  left: 107px;
+  top: 678px;
+  z-index:1
+}
+</style>
+</head>
+<body>
+<input type="checkbox" id="option1">
+<input type="checkbox" id="option2">
+<input type="checkbox" id="option3">
+<input type="checkbox" id="option4">
+<input type="checkbox" id="option5">
+<input type="checkbox" id="option6">
+<input type="checkbox" id="option7">
+<input type="checkbox" id="option8">
+<div id="suiteBarDelta"><div id="suiteBarTop" style="height:50px; width:1140px; position:relative;background-color: #8c2341;text-align: center;"><h2 style="color: #FFFFFF;"><h2 style="color: #FFFFFF;">Selfstudy-Time Test</h2></div></div>
+<div style="width:1120px; position:relative; left:10px;">
+<img src="Folie.PNG" alt="Folie">
+<br>
+<button type="button" onclick="loadDoc('next')">Next</button>
+</div>
+
+<script>
+  setTimeout(function() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "key_kia", true);
+    xhttp.send();
+    alert("Timeout, please Reload!");
+  }, 1000000);
+</script>
+<script>
+function loadDoc(p1) {
+  var xhttp1 = new XMLHttpRequest();
+  xhttp1.open("POST", "key_result_"+document.getElementById('option1').checked+"-"+document.getElementById('option2').checked+"-"+document.getElementById('option3').checked+"-"+document.getElementById('option4').checked+"-"+document.getElementById('option5').checked+"-"+document.getElementById('option6').checked+"-"+document.getElementById('option7').checked+"-"+document.getElementById('option8').checked, true);
+  xhttp1.send()
+  setTimeout(function() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "key_"+p1, true);
+    xhttp.send();
+    setTimeout(function() {
+      location.reload(true);
+    }, 500);
+  }, 500);
+}
+</script>
+
+</body>
+</html>
