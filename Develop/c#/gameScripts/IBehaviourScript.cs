@@ -1,0 +1,3 @@
+interface IBehaviourScript {
+    void getNextStep();
+}

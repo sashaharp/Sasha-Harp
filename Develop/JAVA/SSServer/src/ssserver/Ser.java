@@ -1,5 +1,6 @@
 package ssserver;
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -44,7 +45,7 @@ public class Ser extends Thread {
     @Override
     public void run() {
         try {
-            server = new ServerSocket(8888, 10, InetAddress.getLoopbackAddress());//getLocalAddress()
+            server = new ServerSocket(PORT_NO, 70, InetAddress.getLocalHost());//getLoopbackAddress()
             listen();
         } catch (Exception ex) {
             Logger.getLogger(Ser.class.getName()).log(Level.SEVERE, null, ex);
@@ -70,12 +71,12 @@ public class Ser extends Thread {
                 try {
                     coockie = dataRecieved.split("Cookie: ")[1].split("\n")[0].trim();
                 } catch (Exception e) {}
-                if("/key".equals(dataRecieved.split("\n")[0].split(" ")[1].split("_")[0])) {
-                    String[] keys = dataRecieved.split("\n")[0].split(" ")[1].split("_");
+                if("/key".equals(dataRecieved.split("\n")[0].split(" ")[1].split("_", -1)[0])) {
+                    String[] keys = dataRecieved.split("\n")[0].split(" ")[1].split("_", -1);
                     System.out.println("Key : " + keys[1]);
                     if("login".equals(keys[1])) {
-                        String[] MAs = Files.readAllLines(Paths.get(SERVERPATH + "MAs.txt"), StandardCharsets.ISO_8859_1).get(0).split(",");
-                        String[] pswds = Files.readAllLines(Paths.get(SERVERPATH + "MAs.txt"), StandardCharsets.ISO_8859_1).get(3).split(",");
+                        String[] MAs = Files.readAllLines(Paths.get(SERVERPATH + "MAs.txt"), StandardCharsets.ISO_8859_1).get(0).split(",", -1);
+                        String[] pswds = Files.readAllLines(Paths.get(SERVERPATH + "MAs.txt"), StandardCharsets.ISO_8859_1).get(3).split(",", -1);
                         if(Arrays.asList(MAs).contains(keys[2]) && (pswds.length <= Arrays.asList(MAs).indexOf(keys[2]) || pswds[Arrays.asList(MAs).indexOf(keys[2])].equals(keys[3]))) {
                             Ys.put(keys[2].trim(), 1);
                             tries.put(keys[2].trim(), 0);
@@ -91,7 +92,7 @@ public class Ser extends Thread {
                         }
                     } else if(Ys.containsKey(coockie) && "result".equals(keys[1])) {
                         answs.putIfAbsent(coockie, new ArrayList<Boolean>());
-                        for(String ans: keys[2].split("-")){
+                        for(String ans: keys[2].split("-", -1)){
                             answs.get(coockie).add("true".equals(ans)); //not sure!!
                         }
                     } else if(Ys.containsKey(coockie) && "SSnum".equals(keys[1])) {
@@ -105,7 +106,7 @@ public class Ser extends Thread {
                                 f.createNewFile();
                             }
                             String tempRes = "";
-                            for(int k = 0; k < Math.min(Files.readAllLines(Paths.get(SERVERPATH + SSnums.get(coockie) + "/result.txt"), StandardCharsets.ISO_8859_1).get(0).split(";").length, answs.get(coockie).size()); k++){
+                            for(int k = 0; k < Math.min(Files.readAllLines(Paths.get(SERVERPATH + SSnums.get(coockie) + "/result.txt"), StandardCharsets.ISO_8859_1).get(0).split(";", -1).length, answs.get(coockie).size()); k++){
                                 tempRes += (answs.get(coockie).get(k)?"true":"false") + ";";
                             }
                             Files.write(f.toPath(), ("result:\r\n" + tempRes).getBytes(), StandardOpenOption.APPEND);
@@ -209,7 +210,7 @@ public class Ser extends Thread {
                         try { //maybe error//maybe not neccessery
                             List<Boolean> corrAnsws = new ArrayList<Boolean>();
                             String t = new String(Files.readAllBytes(Paths.get(SERVERPATH + SSnums.get(coockie) + "/result.txt")), StandardCharsets.ISO_8859_1);
-                            for(String corrAns: t.split(";")) {
+                            for(String corrAns: t.split(";", -1)) {
                                 corrAnsws.add("true".equals(corrAns));
                             }
                             int n = 0;
@@ -252,15 +253,15 @@ public class Ser extends Thread {
                     String retSite = new String(Files.readAllBytes(Paths.get(SERVERPATH + "admin.html")), StandardCharsets.ISO_8859_1);
                     String temp = "";
                     List<String> ls = Files.readAllLines(Paths.get(SERVERPATH + "MAs.txt"), StandardCharsets.ISO_8859_1);
-                    String[] Kennungen = ls.get(0).split(",");
-                    String[] Namen = ls.get(1).split(",");
-                    String[] TLs = ls.get(2).split(",");
+                    String[] Kennungen = ls.get(0).split(",", -1);
+                    String[] Namen = ls.get(1).split(",", -1);
+                    String[] TLs = ls.get(2).split(",", -1);
                     for(int n = 0; n < Kennungen.length; n++) {
                         String score = "Nicht bearbeitet!";
                         if(Paths.get(SERVERPATH + SSnums.get(admin) + "/Results/" + Kennungen[n]).toFile().exists()) {
                             List<String> results = Files.readAllLines(Paths.get(SERVERPATH + SSnums.get(admin) + "/Results/" + Kennungen[n]));
-                            results = new ArrayList<String>(Arrays.asList(results.get(results.size() - 1).split(";")));
-                            String[] corrResults = new String(Files.readAllBytes(Paths.get(SERVERPATH + SSnums.get(coockie) + "/result.txt")),StandardCharsets.ISO_8859_1).split(";");
+                            results = new ArrayList<String>(Arrays.asList(results.get(results.size() - 1).split(";", -1)));
+                            String[] corrResults = new String(Files.readAllBytes(Paths.get(SERVERPATH + SSnums.get(coockie) + "/result.txt")),StandardCharsets.ISO_8859_1).split(";", -1);
                             int k = 0;
                             for(int i = 0; i < results.size(); i++) {
                                 if(results.get(i).equals(corrResults[i])) {
