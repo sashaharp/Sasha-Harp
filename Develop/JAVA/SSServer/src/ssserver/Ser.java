@@ -109,7 +109,7 @@ public class Ser extends Thread {
                             for(int k = 0; k < Math.min(Files.readAllLines(Paths.get(SERVERPATH + SSnums.get(coockie) + "/result.txt"), StandardCharsets.ISO_8859_1).get(0).split(";", -1).length, answs.get(coockie).size()); k++){
                                 tempRes += (answs.get(coockie).get(k)?"true":"false") + ";";
                             }
-                            Files.write(f.toPath(), ("result:\r\n" + tempRes).getBytes(), StandardOpenOption.APPEND);
+                            Files.write(f.toPath(), ("result:\r\n" + tempRes.substring(0, tempRes.length()-2)).getBytes(), StandardOpenOption.APPEND);
                             answs.remove(coockie);
                         }
                         SSnums.remove(coockie);
