@@ -253,7 +253,7 @@ public class Ser extends Thread {
                     System.out.println("\nGETTING testRes.HTML\n");
                     byte[] retBytes = new byte[]{};
                     if(new File(SERVERPATH + SSnums.get(coockie) + "/Folien/Test" + (-1*Ys.get(coockie)) + ".PNG").exists()) {
-                        String s = String.join("\r\n", Files.readAllLines(Paths.get(SERVERPATH + "testRes.html")));
+                        String s = String.join("\r\n", Files.readAllLines(Paths.get(SERVERPATH + "testRes.html"), StandardCharsets.ISO_8859_1));
                         s = s.replace("%CHECK1%", answs.get(coockie).get(answs.get(coockie).size()-4)?"checked":"").replace("%CHECK2%", answs.get(coockie).get(answs.get(coockie).size()-3)?"checked":"").replace("%CHECK3%", answs.get(coockie).get(answs.get(coockie).size()-2)?"checked":"").replace("%CHECK4%", answs.get(coockie).get(answs.get(coockie).size()-1)?"checked":"");
                         retBytes = s.getBytes(StandardCharsets.ISO_8859_1);
                     }
