@@ -27,7 +27,7 @@ public class Ser extends Thread {
     public boolean Running;
     public static Ser ver;
     int PORT_NO;
-    String SERVERPATH = "O:/040 Kundencenter/055 Management/2_Themen/12_Performance_Management/2_Themen/Entwicklung/Socks/";//"/home/sashaharp/Documents/git/Sasha-Harp/Develop/JAVA/SSServer/pFolder/";//
+    String SERVERPATH = "O:/040 Kundencenter/055 Management/2_Themen/12_Performance_Management/2_Themen/Entwicklung/JSocks/";//"/home/sashaharp/Documents/git/Sasha-Harp/Develop/JAVA/SSServer/pFolder/";//
     HashMap<String, Integer> Ys = new HashMap<String, Integer>();
     HashMap<String, String> SSnums = new HashMap<String, String>();
     HashMap<String, List<Boolean>> answs = new HashMap<String, List<Boolean>>();
@@ -36,7 +36,7 @@ public class Ser extends Thread {
     String admin = "123!@#456$%^789&*(";
     
     Ser() {
-        this.PORT_NO = 5000;
+        this.PORT_NO = 5001;
         ver = this;
         this.Running = true;
         
@@ -245,6 +245,17 @@ public class Ser extends Thread {
                             }
                             System.out.println(retBytes.length);
                         } catch (Exception e) { retBytes = Files.readAllBytes(Paths.get(SERVERPATH + "index.html")); }
+                    }
+                    client.getOutputStream().write(retBytes);
+                    client.getOutputStream().flush();
+                    client.getOutputStream().close();
+                } else if(Ys.containsKey(coockie) && "/testRes.html".equals(dataRecieved.split("\n")[0].split(" ")[1])) {//try!
+                    System.out.println("\nGETTING testRes.HTML\n");
+                    byte[] retBytes = new byte[]{};
+                    if(new File(SERVERPATH + SSnums.get(coockie) + "/Folien/Test" + (-1*Ys.get(coockie)) + ".PNG").exists()) {
+                        String s = String.join("\r\n", Files.readAllLines(Paths.get(SERVERPATH + "testRes.html")));
+                        s = s.replace("%CHECK1%", answs.get(coockie).get(answs.get(coockie).size()-4)?"checked":"").replace("%CHECK2%", answs.get(coockie).get(answs.get(coockie).size()-3)?"checked":"").replace("%CHECK3%", answs.get(coockie).get(answs.get(coockie).size()-2)?"checked":"").replace("%CHECK4%", answs.get(coockie).get(answs.get(coockie).size()-1)?"checked":"");
+                        retBytes = s.getBytes(StandardCharsets.ISO_8859_1);
                     }
                     client.getOutputStream().write(retBytes);
                     client.getOutputStream().flush();
