@@ -36,7 +36,7 @@ public class Ser extends Thread {
     String admin = "123!@#456$%^789&*(";
     
     Ser() {
-        this.PORT_NO = 6000;
+        this.PORT_NO = 5001;
         ver = this;
         this.Running = true;
         
