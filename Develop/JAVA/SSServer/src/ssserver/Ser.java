@@ -193,7 +193,7 @@ public class Ser extends Thread {
                     client.getOutputStream().close();
                 } else if("/".equals(dataRecieved.split("\n")[0].split(" ")[1])) {
                     String login1 = new String(Files.readAllBytes(Paths.get(SERVERPATH + "login.html")), StandardCharsets.ISO_8859_1);
-                    log(login1);
+                    //log(login1);
                     File[] f_directories = new File(SERVERPATH).listFiles(File::isDirectory);
                     String[] directories = new String[f_directories.length];
                     for(int i = 0; i < directories.length; i++) {
