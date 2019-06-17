@@ -44,7 +44,7 @@ public class Ser extends Thread {
             f.createNewFile();
             Files.write(f.toPath(), "HTTP/1.1 200 OK\r\nServer: Apache/1.3.29 (Unix) PHP/4.3.4\r\nContent-Length: 64000\r\nContent-Language: en_US\r\nConnection: close\r\nContent-Type: text/html\r\n\r\n".getBytes());
         }
-        Files.write(f.toPath(), (new SimpleDateFormat("MM.dd HH:mm:ss").format(Calendar.getInstance().getTime()) + "$ " + s).getBytes(), StandardOpenOption.APPEND);
+        Files.write(f.toPath(), (new SimpleDateFormat("MM.dd HH:mm:ss").format(Calendar.getInstance().getTime()) + "$ " + s + "<br><br>").getBytes(), StandardOpenOption.APPEND);
         System.out.println(new SimpleDateFormat("MM.dd HH:mm:ss").format(Calendar.getInstance().getTime()) + "$ " + s + "\n");
     }
     
