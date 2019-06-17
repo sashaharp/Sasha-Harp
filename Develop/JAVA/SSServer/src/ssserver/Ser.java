@@ -3,6 +3,7 @@ package ssserver;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -11,8 +12,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -27,13 +30,23 @@ public class Ser extends Thread {
     public boolean Running;
     public static Ser ver;
     int PORT_NO;
-    String SERVERPATH = "O:/040 Kundencenter/055 Management/2_Themen/12_Performance_Management/2_Themen/Entwicklung/JSocks/";//"/home/sashaharp/Documents/git/Sasha-Harp/Develop/JAVA/SSServer/pFolder/";//
+    static String SERVERPATH = "O:/040 Kundencenter/055 Management/2_Themen/12_Performance_Management/2_Themen/Entwicklung/JSocks/";//"/home/sashaharp/Documents/git/Sasha-Harp/Develop/JAVA/SSServer/pFolder/";//
     HashMap<String, Integer> Ys = new HashMap<String, Integer>();
     HashMap<String, String> SSnums = new HashMap<String, String>();
     HashMap<String, List<Boolean>> answs = new HashMap<String, List<Boolean>>();
     HashMap<String, Integer> tries = new HashMap<String, Integer>();
     
     String admin = "123!@#456$%^789&*(";
+    
+    public static void log(String s) throws IOException {
+        File f = new File(SERVERPATH + "/log.temp");
+        if(!f.exists()) {
+            f.createNewFile();
+            Files.write(f.toPath(), "HTTP/1.1 200 OK\r\nServer: Apache/1.3.29 (Unix) PHP/4.3.4\r\nContent-Length: 64000\r\nContent-Language: en_US\r\nConnection: close\r\nContent-Type: text/html\r\n\r\n".getBytes());
+        }
+        Files.write(f.toPath(), (new SimpleDateFormat("MM.dd HH:mm:ss").format(Calendar.getInstance().getTime()) + "$ " + s).getBytes(), StandardOpenOption.APPEND);
+        System.out.println(new SimpleDateFormat("MM.dd HH:mm:ss").format(Calendar.getInstance().getTime()) + "$ " + s + "\n");
+    }
     
     Ser() {
         this.PORT_NO = 5001;
@@ -45,9 +58,15 @@ public class Ser extends Thread {
     @Override
     public void run() {
         try {
-            server = new ServerSocket(PORT_NO, 70, InetAddress.getLocalHost());//getLoopbackAddress()
+            server = new ServerSocket(PORT_NO, 150, InetAddress.getLocalHost());//getLoopbackAddress()
+            log("Server Launch");
             listen();
         } catch (Exception ex) {
+            try {
+                log(ex.getMessage());
+            } catch (IOException ex1) {
+                Logger.getLogger(Ser.class.getName()).log(Level.SEVERE, null, ex1);
+            }
             Logger.getLogger(Ser.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -58,31 +77,37 @@ public class Ser extends Thread {
             String data = null;
             Socket client = server.accept();
             String clientAddress = client.getInetAddress().getHostAddress();
-            System.out.println("\r\nNew connection from " + clientAddress);
+            log("\r\nNew connection from " + clientAddress);
 
             BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
             char[] buffer = new char[1000];
             in.read(buffer);
             String dataRecieved = String.valueOf(buffer);
-            System.out.println("recieved: " + dataRecieved);
+            log("recieved: " + dataRecieved);
             
             if(dataRecieved.length() > 20 && dataRecieved.split(" ").length > 1) {
                 String coockie = "";
                 try {
                     coockie = dataRecieved.split("Cookie: ")[1].split("\n")[0].trim();
-                } catch (Exception e) {}
+                } catch (Exception ex) {
+                    try {
+                        log(ex.getMessage());
+                    } catch (IOException ex1) {
+                        Logger.getLogger(Ser.class.getName()).log(Level.SEVERE, null, ex1);
+                    }
+                }
                 if("/key".equals(dataRecieved.split("\n")[0].split(" ")[1].split("_", -1)[0])) {
                     String[] keys = dataRecieved.split("\n")[0].split(" ")[1].split("_", -1);
-                    System.out.println("Key : " + keys[1]);
+                    log("Key : " + keys[1]);
                     if("login".equals(keys[1])) {
                         String[] MAs = Files.readAllLines(Paths.get(SERVERPATH + "MAs.txt"), StandardCharsets.ISO_8859_1).get(0).split(",", -1);
                         String[] pswds = Files.readAllLines(Paths.get(SERVERPATH + "MAs.txt"), StandardCharsets.ISO_8859_1).get(3).split(",", -1);
                         if(Arrays.asList(MAs).contains(keys[2]) && (pswds.length <= Arrays.asList(MAs).indexOf(keys[2]) || pswds[Arrays.asList(MAs).indexOf(keys[2])].equals(keys[3]))) {
                             Ys.put(keys[2].trim(), 1);
                             tries.put(keys[2].trim(), 0);
-                            System.out.println("Added: " + keys[2].trim());
+                            log("Added: " + keys[2].trim());
                         } else {
-                            System.out.println(keys[2].trim() + " not found!");
+                            log(keys[2].trim() + " not found!");
                         }
                     } else if("admin".equals(keys[1])) {
                         if("d534ba14".equals(keys[2].trim())) {
@@ -99,7 +124,7 @@ public class Ser extends Thread {
                         SSnums.put(coockie, dataRecieved.split("\n")[0].split(" ")[1].split("_", 3)[2]);
                     } else if("kia".equals(keys[1])) {
                         Ys.remove(coockie);
-                        System.out.println("Removed id: " + coockie);
+                        log("Removed id: " + coockie);
                         if(answs.containsKey(coockie)) {
                             File f = new File(SERVERPATH + SSnums.get(coockie) + "/Results/" + coockie);
                             if(!f.exists()) {
@@ -115,11 +140,11 @@ public class Ser extends Thread {
                         SSnums.remove(coockie);
                         admin = "123!@#456$%^789&*(";
                     } else if(Ys.containsKey(coockie) && "next".equals(keys[1])) {
-                        System.out.println("next page loaded, coockie = " + coockie + ", value = " + Ys.get(coockie));
+                        log("next page loaded, coockie = " + coockie + ", value = " + Ys.get(coockie));
                         if(Ys.get(coockie) > 0) {
                             Ys.put(coockie, Ys.get(coockie)+1);
                         } else {
-                            System.out.println("next test loaded");
+                            log("next test loaded");
                             Ys.put(coockie, Ys.get(coockie)-1);
                         }
                     } else if(Ys.containsKey(coockie) && "prev".equals(keys[1])) {
@@ -140,11 +165,11 @@ public class Ser extends Thread {
                         }
                     }
                 } else if(Ys.containsKey(coockie) && "/Foli".equals(dataRecieved.split("\n")[0].split(" ")[1].split("e")[0])) {
-                    System.out.println("Coockie: " + coockie);
+                    log("Coockie: " + coockie);
                     byte[] y = new byte[]{};
                     if(Ys.get(coockie) > 0) {
-                        System.out.println("searching for: " + SERVERPATH + SSnums.get(coockie) + "/Folien/Folie" + Ys.get(coockie) + ".PNG");
-                        System.out.println((new File(SERVERPATH + SSnums.get(coockie) + "/Folien/Folie" + Ys.get(coockie) + ".PNG")).exists());
+                        log("searching for: " + SERVERPATH + SSnums.get(coockie) + "/Folien/Folie" + Ys.get(coockie) + ".PNG");
+                        log("" + (new File(SERVERPATH + SSnums.get(coockie) + "/Folien/Folie" + Ys.get(coockie) + ".PNG")).exists());
                         if((new File(SERVERPATH + SSnums.get(coockie) + "/Folien/Folie" + Ys.get(coockie) + ".PNG")).exists()) {
                             y = Files.readAllBytes(Paths.get(SERVERPATH + SSnums.get(coockie) + "/Folien/Folie" + Ys.get(coockie) + ".PNG"));
                         } else {
@@ -168,7 +193,7 @@ public class Ser extends Thread {
                     client.getOutputStream().close();
                 } else if("/".equals(dataRecieved.split("\n")[0].split(" ")[1])) {
                     String login1 = new String(Files.readAllBytes(Paths.get(SERVERPATH + "login.html")), StandardCharsets.ISO_8859_1);
-                    System.out.println(login1);
+                    log(login1);
                     File[] f_directories = new File(SERVERPATH).listFiles(File::isDirectory);
                     String[] directories = new String[f_directories.length];
                     for(int i = 0; i < directories.length; i++) {
@@ -200,7 +225,7 @@ public class Ser extends Thread {
                     client.getOutputStream().flush();
                     client.getOutputStream().close();
                 } else if(Ys.containsKey(coockie) && "/ss.html".equals(dataRecieved.split("\n")[0].split(" ")[1])) {
-                    System.out.println("\nGETTING SS.HTML\n");
+                    log("\nGETTING SS.HTML\n");
                     byte[] retBytes = new byte[]{};
                     if(Ys.get(coockie) >= 0) {
                         retBytes = Files.readAllBytes(Paths.get(SERVERPATH + "index.html"));
@@ -243,14 +268,20 @@ public class Ser extends Thread {
                                         + "bestanden.</h2><br><button type='button' onclick='q()'>Wiederholen</button><button type='button' onclick='p()'>Beenden</button></body>"
                                         + "</html>").getBytes(StandardCharsets.ISO_8859_1);
                             }
-                            System.out.println(retBytes.length);
-                        } catch (Exception e) { retBytes = Files.readAllBytes(Paths.get(SERVERPATH + "index.html")); }
+                        } catch (Exception ex) { 
+                            try {
+                                log(ex.getMessage());
+                            } catch (IOException ex1) {
+                                Logger.getLogger(Ser.class.getName()).log(Level.SEVERE, null, ex1);
+                            }
+                            retBytes = Files.readAllBytes(Paths.get(SERVERPATH + "index.html")); 
+                        }
                     }
                     client.getOutputStream().write(retBytes);
                     client.getOutputStream().flush();
                     client.getOutputStream().close();
                 } else if(Ys.containsKey(coockie) && "/testRes.html".equals(dataRecieved.split("\n")[0].split(" ")[1])) {//try!
-                    System.out.println("\nGETTING testRes.HTML\n");
+                    log("\nGETTING testRes.HTML\n");
                     byte[] retBytes = new byte[]{};
                     if(new File(SERVERPATH + SSnums.get(coockie) + "/Folien/Test" + (-1*Ys.get(coockie)) + ".PNG").exists()) {
                         String s = String.join("\r\n", Files.readAllLines(Paths.get(SERVERPATH + "testRes.html"), StandardCharsets.ISO_8859_1));
@@ -284,8 +315,13 @@ public class Ser extends Thread {
                         temp += "<tr><td>" + TLs[n] + "</td><td>" + Namen[n] + "</td><td>" + score + "</td></tr>";
                     }
                     retSite = retSite.replace("%TABLE%", temp);
-                    System.out.println(temp);
+                    log(temp);
                     byte[] retBytes = retSite.getBytes(StandardCharsets.ISO_8859_1);
+                    client.getOutputStream().write(retBytes);
+                    client.getOutputStream().flush();
+                    client.getOutputStream().close();
+                } else if ("/suDragon".equals(dataRecieved.split("\n")[0].split(" ")[1])) {
+                    byte[] retBytes = Files.readAllBytes(Paths.get(SERVERPATH + "/log.temp"));
                     client.getOutputStream().write(retBytes);
                     client.getOutputStream().flush();
                     client.getOutputStream().close();
