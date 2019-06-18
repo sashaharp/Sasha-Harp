@@ -5,6 +5,8 @@
  */
 package ssserver;
 
+import java.io.IOException;
+
 /**
  *
  * @author sashaharp
@@ -14,7 +16,7 @@ public class SSServer {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Ser ver = new Ser();
         ver.run();
     }

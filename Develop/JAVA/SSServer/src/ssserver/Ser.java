@@ -48,11 +48,61 @@ public class Ser extends Thread {
         System.out.println(new SimpleDateFormat("MM.dd HH:mm:ss").format(Calendar.getInstance().getTime()) + "$ " + s + "\n");
     }
     
-    Ser() {
+    public void crash() throws IOException {
+        File f = new File(SERVERPATH + "/log.temp");
+        if(f.exists()) {
+            f.delete();
+        }
+        f.createNewFile();
+        String so = "";
+        for(String k : Ys.keySet()) {
+            so = so + k + ":" + Ys.get(k) + ";";
+        }
+        so = so.substring(0, so.length()-1) + "\n";
+        for(String k : SSnums.keySet()) {
+            so = so + k + ":" + SSnums.get(k) + ";";
+        }
+        so = so.substring(0, so.length()-1) + "\n";
+        for(String k : answs.keySet()) {
+            so = so + k + ":";
+            for(Boolean b : answs.get(k)) {
+                so = so + b + ":";
+            }
+            so = so.substring(0, so.length()-1) + ";";
+        }
+        so = so.substring(0, so.length()-1) + "\n";
+        for(String k : tries.keySet()) {
+            so = so + k + ":" + tries.get(k) + ";";
+        }
+        so = so.substring(0, so.length()-1);
+        Files.write(f.toPath(), so.getBytes());
+    }
+    
+    Ser() throws IOException {
         this.PORT_NO = 5001;
         ver = this;
         this.Running = true;
-        
+        File f = new File(SERVERPATH + "/log.temp");
+        if(f.exists()) {
+            List<String> ls = Files.readAllLines(f.toPath());
+            for(String v : ls.get(0).split(";")) {
+                Ys.putIfAbsent(v.split(":")[0], Integer.parseInt(v.split(":")[1]));
+            }
+            for(String v : ls.get(1).split(";")) {
+                SSnums.putIfAbsent(v.split(":")[0], v.split(":")[1]);
+            }
+            for(String v : ls.get(2).split(";")) {
+                List<Boolean> temp = new ArrayList<Boolean>();
+                for(int n = 1; n < v.split(":").length; n++) {
+                    temp.add(Boolean.parseBoolean(v.split(":")[n]));
+                }
+                answs.putIfAbsent(v.split(":")[0], temp);
+            }
+            for(String v : ls.get(3).split(";")) {
+                tries.putIfAbsent(v.split(":")[0], Integer.parseInt(v.split(":")[1]));
+            }
+            f.delete();
+        }
     }
     
     @Override
@@ -67,6 +117,11 @@ public class Ser extends Thread {
             } catch (IOException ex1) {
                 Logger.getLogger(Ser.class.getName()).log(Level.SEVERE, null, ex1);
             }
+            Logger.getLogger(Ser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            crash();
+        } catch (IOException ex) {
             Logger.getLogger(Ser.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -188,9 +243,13 @@ public class Ser extends Thread {
                     byte[] retBytes = new byte[x.length + y.length];
                     System.arraycopy(x, 0, retBytes, 0, x.length);
                     System.arraycopy(y, 0, retBytes, x.length, y.length);
-                    client.getOutputStream().write(retBytes);
-                    client.getOutputStream().flush();
-                    client.getOutputStream().close();
+                    try {
+                        client.getOutputStream().write(retBytes);
+                        client.getOutputStream().flush();
+                        client.getOutputStream().close();
+                    } catch(Exception ex) {
+                        log(ex.getMessage());
+                    }
                 } else if("/".equals(dataRecieved.split("\n")[0].split(" ")[1])) {
                     String login1 = new String(Files.readAllBytes(Paths.get(SERVERPATH + "login.html")), StandardCharsets.ISO_8859_1);
                     //log(login1);
@@ -221,9 +280,13 @@ public class Ser extends Thread {
                             + "</div>\r\n"
                             + "</body></html>").replace("#NORMS#", norms.replace(SERVERPATH.replace("_", " "), "")).replace("#ADMINS#", admins.replace(SERVERPATH.replace("_", " "), ""));
                     byte[] retBytes = (login1+login3).getBytes(StandardCharsets.ISO_8859_1);
-                    client.getOutputStream().write(retBytes);
-                    client.getOutputStream().flush();
-                    client.getOutputStream().close();
+                    try {
+                        client.getOutputStream().write(retBytes);
+                        client.getOutputStream().flush();
+                        client.getOutputStream().close();
+                    } catch(Exception ex) {
+                        log(ex.getMessage());
+                    }
                 } else if(Ys.containsKey(coockie) && "/ss.html".equals(dataRecieved.split("\n")[0].split(" ")[1])) {
                     log("\nGETTING SS.HTML\n");
                     byte[] retBytes = new byte[]{};
@@ -277,9 +340,13 @@ public class Ser extends Thread {
                             retBytes = Files.readAllBytes(Paths.get(SERVERPATH + "index.html")); 
                         }
                     }
-                    client.getOutputStream().write(retBytes);
-                    client.getOutputStream().flush();
-                    client.getOutputStream().close();
+                    try {
+                        client.getOutputStream().write(retBytes);
+                        client.getOutputStream().flush();
+                        client.getOutputStream().close();
+                    } catch(Exception ex) {
+                        log(ex.getMessage());
+                    }
                 } else if(Ys.containsKey(coockie) && "/testRes.html".equals(dataRecieved.split("\n")[0].split(" ")[1])) {//try!
                     log("\nGETTING testRes.HTML\n");
                     byte[] retBytes = new byte[]{};
@@ -288,9 +355,13 @@ public class Ser extends Thread {
                         s = s.replace("%CHECK1%", answs.get(coockie).get(answs.get(coockie).size()-4)?"checked":"").replace("%CHECK2%", answs.get(coockie).get(answs.get(coockie).size()-3)?"checked":"").replace("%CHECK3%", answs.get(coockie).get(answs.get(coockie).size()-2)?"checked":"").replace("%CHECK4%", answs.get(coockie).get(answs.get(coockie).size()-1)?"checked":"");
                         retBytes = s.getBytes(StandardCharsets.ISO_8859_1);
                     }
-                    client.getOutputStream().write(retBytes);
-                    client.getOutputStream().flush();
-                    client.getOutputStream().close();
+                    try {
+                        client.getOutputStream().write(retBytes);
+                        client.getOutputStream().flush();
+                        client.getOutputStream().close();
+                    } catch(Exception ex) {
+                        log(ex.getMessage());
+                    }
                 } else if("/admin.html".equals(dataRecieved.split("\n")[0].split(" ")[1]) && admin.equals(coockie)) {
                     String retSite = new String(Files.readAllBytes(Paths.get(SERVERPATH + "admin.html")), StandardCharsets.ISO_8859_1);
                     String temp = "";
@@ -317,22 +388,31 @@ public class Ser extends Thread {
                     retSite = retSite.replace("%TABLE%", temp);
                     log(temp);
                     byte[] retBytes = retSite.getBytes(StandardCharsets.ISO_8859_1);
-                    client.getOutputStream().write(retBytes);
-                    client.getOutputStream().flush();
-                    client.getOutputStream().close();
+                    try {
+                        client.getOutputStream().write(retBytes);
+                        client.getOutputStream().flush();
+                        client.getOutputStream().close();
+                    } catch(Exception ex) {
+                        log(ex.getMessage());
+                    }
                 } else if ("/suDragon".equals(dataRecieved.split("\n")[0].split(" ")[1])) {
                     byte[] retBytes = Files.readAllBytes(Paths.get(SERVERPATH + "/log.temp"));
-                    client.getOutputStream().write(retBytes);
-                    client.getOutputStream().flush();
-                    client.getOutputStream().close();
+                    try {
+                        client.getOutputStream().write(retBytes);
+                        client.getOutputStream().flush();
+                        client.getOutputStream().close();
+                    } catch(Exception ex) {
+                        log(ex.getMessage());
+                    }
                 }
 //                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 //                out.write("HTTP/1.1 200 OK\nDate: Mon, 18 Mar 2019 16:21:50 GMT\nServer: Apache/2.2.14\nContent-Length: 88\nContent-Type: text/html\nConnection: Closed\n\nHello World");
 //                out.newLine();//dunno
 //                out.flush();//send... probably?
             }
-            
+            crash();
             client.close();
         }
+            crash();
     }
 }
