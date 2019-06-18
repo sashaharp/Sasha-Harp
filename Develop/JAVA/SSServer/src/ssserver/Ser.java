@@ -49,7 +49,7 @@ public class Ser extends Thread {
     }
     
     public void crash() throws IOException {
-        File f = new File(SERVERPATH + "/log.temp");
+        File f = new File(SERVERPATH + "/crash.state");
         if(f.exists()) {
             f.delete();
         }
@@ -82,7 +82,7 @@ public class Ser extends Thread {
         this.PORT_NO = 5001;
         ver = this;
         this.Running = true;
-        File f = new File(SERVERPATH + "/log.temp");
+        File f = new File(SERVERPATH + "/crash.state");
         if(f.exists()) {
             List<String> ls = Files.readAllLines(f.toPath());
             for(String v : ls.get(0).split(";")) {
