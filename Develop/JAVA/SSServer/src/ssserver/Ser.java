@@ -75,6 +75,9 @@ public class Ser extends Thread {
             so = so + k + ":" + tries.get(k) + ";";
         }
         so = so.substring(0, so.length()-1);
+        if(so.length() < 4) {
+            so = "\n\n\n\n";
+        }
         Files.write(f.toPath(), so.getBytes());
     }
     
