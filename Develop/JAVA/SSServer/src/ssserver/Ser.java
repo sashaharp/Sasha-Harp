@@ -58,6 +58,8 @@ public class Ser extends Thread {
         for(String k : Ys.keySet()) {
             so = so + k + ":" + Ys.get(k) + ";";
         }
+        if(so.length()==0) 
+            return;
         so = so.substring(0, so.length()-1) + "\n";
         for(String k : SSnums.keySet()) {
             so = so + k + ":" + SSnums.get(k) + ";";
@@ -89,21 +91,23 @@ public class Ser extends Thread {
         try {
             if(f.exists()) {
                 List<String> ls = Files.readAllLines(f.toPath());
-                for(String v : ls.get(0).split(";")) {
-                    Ys.putIfAbsent(v.split(":")[0], Integer.parseInt(v.split(":")[1]));
-                }
-                for(String v : ls.get(1).split(";")) {
-                    SSnums.putIfAbsent(v.split(":")[0], v.split(":")[1]);
-                }
-                for(String v : ls.get(2).split(";")) {
-                    List<Boolean> temp = new ArrayList<Boolean>();
-                    for(int n = 1; n < v.split(":").length; n++) {
-                        temp.add(Boolean.parseBoolean(v.split(":")[n]));
+                if(ls.size()>0 && ls.get(0).length()>0) {
+                    for(String v : ls.get(0).split(";")) {
+                        Ys.putIfAbsent(v.split(":")[0], Integer.parseInt(v.split(":")[1]));
                     }
-                    answs.putIfAbsent(v.split(":")[0], temp);
-                }
-                for(String v : ls.get(3).split(";")) {
-                    tries.putIfAbsent(v.split(":")[0], Integer.parseInt(v.split(":")[1]));
+                    for(String v : ls.get(1).split(";")) {
+                        SSnums.putIfAbsent(v.split(":")[0], v.split(":")[1]);
+                    }
+                    for(String v : ls.get(2).split(";")) {
+                        List<Boolean> temp = new ArrayList<Boolean>();
+                        for(int n = 1; n < v.split(":").length; n++) {
+                            temp.add(Boolean.parseBoolean(v.split(":")[n]));
+                        }
+                        answs.putIfAbsent(v.split(":")[0], temp);
+                    }
+                    for(String v : ls.get(3).split(";")) {
+                        tries.putIfAbsent(v.split(":")[0], Integer.parseInt(v.split(":")[1]));
+                    }
                 }
                 f.delete();
             }

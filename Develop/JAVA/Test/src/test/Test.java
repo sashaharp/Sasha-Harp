@@ -6,6 +6,8 @@ import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.ComThread;
 import com.jacob.com.Dispatch;
 import com.jacob.com.Variant;
+import java.util.Date;
+import sun.util.calendar.BaseCalendar;
 
 public class Test {
 
