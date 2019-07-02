@@ -23,9 +23,10 @@ public class Test {
             if(Integer.parseInt(formatter.format(new Date()))==12) {
                 callExcelMacro(file, macroName);
             }
-            if(args.length > 0)
+            if(args.length > 0) {
                 Thread.sleep(1000 * 60 * 5);
-            else
+                callExcelMacro(file, macroName);
+            } else
                 Thread.sleep(1000 * 60 * 59);
         }
     }
