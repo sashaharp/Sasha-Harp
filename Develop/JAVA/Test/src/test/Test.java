@@ -6,18 +6,28 @@ import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.ComThread;
 import com.jacob.com.Dispatch;
 import com.jacob.com.Variant;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import sun.util.calendar.BaseCalendar;
 
 public class Test {
 
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-
+    public static void main(String[] args) throws InterruptedException {
         File file = new File(".\\test.xlsm");
         String macroName = "TestM";
-        callExcelMacro(file, macroName);
 
+        SimpleDateFormat formatter = new SimpleDateFormat("HH");
+        if(Integer.parseInt(formatter.format(new Date()))>12) {
+            callExcelMacro(file, macroName);
+        }
+        while(true) {
+            if(Integer.parseInt(formatter.format(new Date()))==12) {
+                callExcelMacro(file, macroName);
+            }
+            if(args.length > 0)
+                Thread.sleep(1000 * 60 * 5);
+            else
+                Thread.sleep(1000 * 60 * 59);
+        }
     }
 
     private static void callExcelMacro(File file, String macroName) {
@@ -37,15 +47,15 @@ public class Test {
             Variant result = Dispatch.call(excel, "Run", new Variant("\'"+file.getName()+"\'!"+ macroName));
 
             // Saves and closes
-            Dispatch.call(workBook, "Save");
+            //Dispatch.call(workBook, "Save");
 
-            com.jacob.com.Variant f = new com.jacob.com.Variant(true);
-            Dispatch.call(workBook, "Close", f);
+            //com.jacob.com.Variant f = new com.jacob.com.Variant(false);
+            //Dispatch.call(workBook, "Close", f);
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            excel.invoke("Quit", new Variant[0]);
+            //excel.invoke("Quit", new Variant[0]);
             ComThread.Release();
         }
     }
