@@ -1,9 +1,14 @@
 package mtserver;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.State;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 /**
  *
@@ -36,7 +41,14 @@ public class MTServer {
     }
     
     public static void log(String msg) {
-        
+        System.out.println(msg);
+        File f = new File(SERVERPATH + "/log.temp");
+        try {
+            if(!f.exists()) {
+                f.createNewFile();
+            }
+            Files.write(f.toPath(), msg.getBytes(), StandardOpenOption.APPEND);
+        } catch(Exception e) {}
     }
     
 }
