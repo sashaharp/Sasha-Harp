@@ -54,7 +54,7 @@ public class ServerThread implements Runnable {
                 MTServer.log("Thread " + Thread.currentThread().getName() + " is handling " + (info.cookie==""?"a new client":info.cookie) + "\r\n\r\n");
                 if(info.get) { //getRequest
                     byte[] retBytes = new byte[]{};
-                    if(info.arguments.equals("/")) {
+                    if(info.arguments[0].equals("/")) {
                         String login = new String(Files.readAllBytes(Paths.get(MTServer.SERVERPATH + "login.html")), StandardCharsets.ISO_8859_1);
                         File[] f_directories = new File(MTServer.SERVERPATH).listFiles(File::isDirectory);
                         String[] directories = new String[f_directories.length];
@@ -70,7 +70,7 @@ public class ServerThread implements Runnable {
                         }
                         login = login.replace("#NORMS#", norms.replace(MTServer.SERVERPATH.replace("_", " "), "")).replace("#ADMINS#", admins.replace(MTServer.SERVERPATH.replace("_", " "), ""));
                         retBytes = getAnsw(login.getBytes(StandardCharsets.ISO_8859_1), true, false);
-                    } else if(info.arguments.equals("/Folie.PNG")) {
+                    } else if(info.arguments[0].equals("/Folie.PNG")) {
                         int n;
                         if((n = lock.contains(info.cookie)) >= 0) {
                             String SSnum = lock.entries.get(n).currentSS;
@@ -90,7 +90,7 @@ public class ServerThread implements Runnable {
                                 }
                             }
                         }
-                    } else if(info.arguments.equals("/ss.html")) {
+                    } else if(info.arguments[0].equals("/ss.html")) {
                         int n;
                         if((n = lock.contains(info.cookie)) >= 0) {
                             int page = lock.entries.get(n).page;
@@ -132,7 +132,7 @@ public class ServerThread implements Runnable {
                                 }
                             }
                         }
-                    } else if(info.arguments.equals("testRes.html")) {
+                    } else if(info.arguments[0].equals("testRes.html")) {
                         int n;
                         if((n = lock.contains(info.cookie)) >= 0) {
                             String SSnum = lock.entries.get(n).currentSS;
@@ -144,7 +144,7 @@ public class ServerThread implements Runnable {
                                 retBytes = getAnsw(s.getBytes(StandardCharsets.ISO_8859_1), true, false);
                             }
                         }
-                    } else if(info.arguments.equals("/admin.html")) {
+                    } else if(info.arguments[0].equals("/admin.html")) {
                         int n;
                         if((n = lock.contains(info.cookie)) >= 0 && lock.admin.equals(info.cookie)) {
                             String SSnum = lock.entries.get(n).currentSS;
@@ -176,7 +176,7 @@ public class ServerThread implements Runnable {
                             retSite = retSite.replace("%TABLE%", temp);
                             retBytes = getAnsw(retSite.getBytes(StandardCharsets.ISO_8859_1), true, false);
                         }
-                    } else if(info.arguments.equals("/suDragon")) {
+                    } else if(info.arguments[0].equals("/suDragon")) {
                         retBytes = getAnsw(Files.readAllBytes(Paths.get(MTServer.SERVERPATH + "/log.temp")), true, true);
                     }
                     synchronized(lock) {
@@ -184,6 +184,7 @@ public class ServerThread implements Runnable {
                             client.getOutputStream().write(retBytes);
                             client.getOutputStream().flush();
                             client.getOutputStream().close();
+                            MTServer.log(Thread.currentThread().getName() + " has sent a packet successfully\r\n\r\n");
                         } catch(Exception e) {
                             MTServer.log("Error while " + Thread.currentThread().getName() + " was sending answer to last request\r\nerror=" + e.getMessage() + "\r\n\r\n");
                         }
