@@ -16,7 +16,7 @@ import java.nio.file.StandardOpenOption;
  */
 public class MTServer {
 
-    public static String SERVERPATH;
+    public static String SERVERPATH = "O:/040 Kundencenter/055 Management/2_Themen/12_Performance_Management/2_Themen/Entwicklung/MT_JSocks/";
     
     public static void main(String[] args) throws InterruptedException, IOException{
         Database lock = new Database();
