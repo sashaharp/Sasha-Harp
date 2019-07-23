@@ -71,6 +71,7 @@ public class ServerThread implements Runnable {
                             admins += "<button type=\"button\" onclick=\"q('" + d.replace(MTServer.SERVERPATH, "") + "')\">Admin Eingang " + d.replace("_", " ") + "</button><br>\r\n";
                         }
                         login = login.replace("#NORMS#", norms.replace(MTServer.SERVERPATH.replace("_", " "), "")).replace("#ADMINS#", admins.replace(MTServer.SERVERPATH.replace("_", " "), ""));
+                        MTServer.log(login);
                         retBytes = getAnsw(login.getBytes(StandardCharsets.ISO_8859_1), true, false);
                     } else if(info.arguments[0].equals("/Folie.PNG")) {
                         int n;
@@ -181,7 +182,9 @@ public class ServerThread implements Runnable {
                     } else if(info.arguments[0].equals("/suDragon")) {
                         retBytes = getAnsw(Files.readAllBytes(Paths.get(MTServer.SERVERPATH + "/log.temp")), true, true);
                     }
+                    MTServer.log(Thread.currentThread().getName() + " has started sending\r\n\r\n");
                     synchronized(lock) {
+                        MTServer.log(Thread.currentThread().getName() + " has synchronized sending\r\n\r\n");
                         try {
                             client.getOutputStream().write(retBytes);
                             client.getOutputStream().flush();
