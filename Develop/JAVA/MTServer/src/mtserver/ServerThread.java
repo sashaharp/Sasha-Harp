@@ -53,8 +53,10 @@ public class ServerThread implements Runnable {
                 packetInfo info = new packetInfo(data);
                 MTServer.log("Thread " + Thread.currentThread().getName() + " is handling " + (info.cookie==""?"a new client":info.cookie) + "\r\n\r\n");
                 if(info.get) { //getRequest
+                    MTServer.log(Thread.currentThread().getName() + " is handling get\r\n\r\n");
                     byte[] retBytes = new byte[]{};
                     if(info.arguments[0].equals("/")) {
+                        MTServer.log(Thread.currentThread().getName() + " is handling get /\r\n\r\n");
                         String login = new String(Files.readAllBytes(Paths.get(MTServer.SERVERPATH + "login.html")), StandardCharsets.ISO_8859_1);
                         File[] f_directories = new File(MTServer.SERVERPATH).listFiles(File::isDirectory);
                         String[] directories = new String[f_directories.length];
