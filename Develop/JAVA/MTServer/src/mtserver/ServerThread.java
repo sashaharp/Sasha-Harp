@@ -71,7 +71,7 @@ public class ServerThread implements Runnable {
                             admins += "<button type=\"button\" onclick=\"q('" + d.replace(MTServer.SERVERPATH, "") + "')\">Admin Eingang " + d.replace("_", " ") + "</button><br>\r\n";
                         }
                         login = login.replace("#NORMS#", norms.replace(MTServer.SERVERPATH.replace("_", " "), "")).replace("#ADMINS#", admins.replace(MTServer.SERVERPATH.replace("_", " "), ""));
-                        MTServer.log(login);
+                        //MTServer.log(login + "\r\n\r\n");
                         retBytes = getAnsw(login.getBytes(StandardCharsets.ISO_8859_1), true, false);
                     } else if(info.arguments[0].equals("/Folie.PNG")) {
                         int n;
