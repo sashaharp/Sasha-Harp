@@ -2,6 +2,8 @@ package video_ident;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -44,15 +46,37 @@ public class Main {
 					LocalDate Date = LocalDate.of(Integer.parseInt(date.substring(0,4)), Integer.parseInt(date.substring(4,2)), Integer.parseInt(date.substring(6,2)));
 					if(fromDate.compareTo(Date) <= 0 && Date.compareTo(tillDate) <= 0) {
 						try {
-							
+							File file = new File(xmlfile);
+							byte[] b_c = new byte[(int) file.length()];
+							FileInputStream fis = new FileInputStream(file);
+							fis.read(b_c);
+							fis.close();
+							String name = new String(b_c).split("=\"customerFirstName\" Value=\"")[1].split("\"")[0].trim() + " " + new String(b_c).split("=\"customerLastName\" Value=\"")[1].split("\"")[0].trim();
+							table.get(n).add(new String[] {name, date.substring(6, 2) + "." + date.substring(4, 2) + "." + date.substring(0, 4)});
 						} catch (Exception e) {
-							
+                            System.out.println("ERROR ON: " + xmlfile);
+							table.get(n).add(new String[] {"ERROR", date.substring(6, 2) + "." + date.substring(4, 2) + "." + date.substring(0, 4)});
 						}
 					}
 				}
 			}
-				
 		}
+		FileOutputStream fos = new FileOutputStream(fromDate.getYear() + (fromDate.getMonthValue()<10?"0":"") + fromDate.getMonthValue() + (fromDate.getDayOfMonth()<10?"0":"") + fromDate.getDayOfMonth() + "-" + tillDate.getYear() + (tillDate.getMonthValue()<10?"0":"") + tillDate.getMonthValue() + (tillDate.getDayOfMonth()<10?"0":"") + tillDate.getDayOfMonth() + ".csv");
+		String tableString = "";
+		int rowNum = 0;
+		for(int i = 0; i < table.size(); i++) {
+			rowNum = Math.max(rowNum, table.get(i).size());
+		}
+		for(int i = 0; i < rowNum; i++) {
+			for(int j = 0; j < table.size(); j++) {
+				tableString += table.get(j).size()>i?(table.get(j).get(i)[0]+ ";" + table.get(j).get(i)[1] + ";") : (" ; ;");
+			}
+			tableString += "\r\n";
+		}
+		fos.write(tableString.getBytes());
+		fos.close();
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		br.readLine();
 	}
 
 }
