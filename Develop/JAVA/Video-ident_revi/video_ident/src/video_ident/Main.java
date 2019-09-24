@@ -42,7 +42,7 @@ public class Main {
 					s_xmlfiles[n1] = xmlfiles[n1].getAbsolutePath();
 				Arrays.sort(s_xmlfiles);
 				for(String xmlfile : s_xmlfiles) {
-					String date = xmlfile.split("\\")[xmlfile.split("\\").length-1].substring(0,8);
+					String date = xmlfile.split("\\\\")[xmlfile.split("\\\\").length-1].substring(0,8);
 					LocalDate Date = LocalDate.of(Integer.parseInt(date.substring(0,4)), Integer.parseInt(date.substring(4,6)), Integer.parseInt(date.substring(6,8)));
 					if(fromDate.compareTo(Date) <= 0 && Date.compareTo(tillDate) <= 0) {
 						try {
