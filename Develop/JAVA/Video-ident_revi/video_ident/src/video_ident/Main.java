@@ -43,7 +43,7 @@ public class Main {
 				Arrays.sort(s_xmlfiles);
 				for(String xmlfile : s_xmlfiles) {
 					String date = xmlfile.split("\\")[xmlfile.split("\\").length-1].substring(0,8);
-					LocalDate Date = LocalDate.of(Integer.parseInt(date.substring(0,4)), Integer.parseInt(date.substring(4,2)), Integer.parseInt(date.substring(6,2)));
+					LocalDate Date = LocalDate.of(Integer.parseInt(date.substring(0,4)), Integer.parseInt(date.substring(4,6)), Integer.parseInt(date.substring(6,8)));
 					if(fromDate.compareTo(Date) <= 0 && Date.compareTo(tillDate) <= 0) {
 						try {
 							File file = new File(xmlfile);
@@ -52,10 +52,10 @@ public class Main {
 							fis.read(b_c);
 							fis.close();
 							String name = new String(b_c).split("=\"customerFirstName\" Value=\"")[1].split("\"")[0].trim() + " " + new String(b_c).split("=\"customerLastName\" Value=\"")[1].split("\"")[0].trim();
-							table.get(n).add(new String[] {name, date.substring(6, 2) + "." + date.substring(4, 2) + "." + date.substring(0, 4)});
+							table.get(n).add(new String[] {name, date.substring(6, 8) + "." + date.substring(4, 6) + "." + date.substring(0, 4)});
 						} catch (Exception e) {
                             System.out.println("ERROR ON: " + xmlfile);
-							table.get(n).add(new String[] {"ERROR", date.substring(6, 2) + "." + date.substring(4, 2) + "." + date.substring(0, 4)});
+							table.get(n).add(new String[] {"ERROR", date.substring(6, 8) + "." + date.substring(4, 6) + "." + date.substring(0, 4)});
 						}
 					}
 				}
