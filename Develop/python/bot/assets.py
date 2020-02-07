@@ -4,8 +4,10 @@ import shutil
 import stat
 from google_images_download import google_images_download
 import subprocess
+from skimage.io import imread, imsave
+import numpy as np
 response = google_images_download.googleimagesdownload()
-  
+
 def downloadimages(query, offset=0):
     arguments = {"keywords": query, 
                  "limit": 3,
@@ -27,6 +29,7 @@ def download_sample(query, offset=0):
 def cleanup(query):
     shutil.rmtree("download_sample/" + query)
 
+
 if __name__ == "__main__":
     download_sample("sword 2d texture")
-    cleanup("sword 2d texture")
+    #cleanup("sword 2d texture")
