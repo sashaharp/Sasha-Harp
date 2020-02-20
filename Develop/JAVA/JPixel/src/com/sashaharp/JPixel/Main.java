@@ -5,15 +5,20 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
+import javax.tools.Tool;
 import java.nio.*;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.GL_UNSIGNED_INT_8_8_8_8;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 public class Main {
+
+    private int[] texDat = new int[64];
+    private int tex;
 
     static class Vec2 {
         float x;
@@ -35,6 +40,9 @@ public class Main {
         public void translate(float xoffset, float yoffset) {
             x += xoffset;
             y += yoffset;
+        }
+        public float length() {
+            return (float)Math.sqrt(x*x + y*y);
         }
     }
 
@@ -106,6 +114,26 @@ public class Main {
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
                 glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+            if (key == GLFW_KEY_0)
+                Toolbar.getCol(0);
+            if (key == GLFW_KEY_1)
+                Toolbar.getCol(1);
+            if (key == GLFW_KEY_2)
+                Toolbar.getCol(2);
+            if (key == GLFW_KEY_3)
+                Toolbar.getCol(3);
+            if (key == GLFW_KEY_4)
+                Toolbar.getCol(4);
+            if (key == GLFW_KEY_5)
+                Toolbar.getCol(5);
+            if (key == GLFW_KEY_6)
+                Toolbar.getCol(6);
+            if (key == GLFW_KEY_7)
+                Toolbar.getCol(7);
+            if (key == GLFW_KEY_8)
+                Toolbar.getCol(8);
+            if (key == GLFW_KEY_9)
+                Toolbar.getCol(9);
             if ( key == GLFW_KEY_LEFT_CONTROL || key == GLFW_KEY_RIGHT_CONTROL)
                 if (action == GLFW_PRESS)
                     control = true;
@@ -129,12 +157,24 @@ public class Main {
         });
 
         glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
-
+            if(button == GLFW_MOUSE_BUTTON_LEFT && !alt && !control && !shift) {
+                drawPixel();
+            }else if(button == GLFW_MOUSE_BUTTON_RIGHT && control && alt) {
+                p00 = new Vec2(0, 0);
+                p01 = new Vec2(0, 1);
+                p11 = new Vec2(1, 1);
+                p10 = new Vec2(1, 0);
+            }
         });
 
         glfwSetScrollCallback(window, (window, xoffset, yoffset) -> {
+            if(Math.abs(yoffset) > 0.5)
+                yoffset *= 0.08;
             if(!control && !alt) {
-                movePic((float)xoffset%1, (float)yoffset%1);
+                if(shift)
+                    movePic((float)yoffset%1, (float)xoffset%1);
+                else
+                    movePic((float)xoffset%1, (float)yoffset%1);
             } else if (control) {
                 zoomPic((float) yoffset);
             } else if (alt) {
@@ -193,18 +233,34 @@ public class Main {
     }
 
     private void rotatePic(float alpha) {
-        p00.translate(-0.5f, -0.5f);
+        p00.translate(-mouseX, -mouseY);
         p00.rotate(alpha);
-        p00.translate(0.5f, 0.5f);
-        p01.translate(-0.5f, -0.5f);
+        p00.translate(mouseX, mouseY);
+        p01.translate(-mouseX, -mouseY);
         p01.rotate(alpha);
-        p01.translate(0.5f, 0.5f);
-        p11.translate(-0.5f, -0.5f);
+        p01.translate(mouseX, mouseY);
+        p11.translate(-mouseX, -mouseY);
         p11.rotate(alpha);
-        p11.translate(0.5f, 0.5f);
-        p10.translate(-0.5f, -0.5f);
+        p11.translate(mouseX, mouseY);
+        p10.translate(-mouseX, -mouseY);
         p10.rotate(alpha);
-        p10.translate(0.5f, 0.5f);
+        p10.translate(mouseX, mouseY);
+    }
+
+    private void drawPixel() {
+        Vec2 mP = new Vec2(mouseX, mouseY);
+        mP.translate(-p00.x, -p00.y);
+        float delta = (float)Math.asin((p01.y-p00.y)/(new Vec2(p01.x-p00.x, p01.y-p00.y)).length());
+        mP.rotate(delta);
+        mP.stretch(1/(p11.x - p00.x));
+        int xOff = (int)(mP.x * 8);
+        int yOff = (int)(mP.y * 8);
+        if(8*yOff+xOff >=0 && 8*yOff+xOff < 64)
+            texDat[8*yOff+xOff] = 0xFF000000 | Toolbar.currColor.getRed() | Toolbar.currColor.getGreen()<<8 | Toolbar.currColor.getBlue()<<16;
+        glBindTexture(GL_TEXTURE_2D, tex);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 8, 8, 0, GL_RGBA, GL_UNSIGNED_BYTE, texDat);
     }
 
     private void loop() {
@@ -218,15 +274,14 @@ public class Main {
         // Set the clear color
         glClearColor(0.55f, 0.55f, 0.6f, 0.0f);
 
-        short[] texDat = new short[64];
         for (int i = 0; i < 64; ++i)
             texDat[i] = (byte)(((i + (i / 8)) % 2) * 128 + 127);
 
-        int tex = glGenTextures();
+        tex = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, tex);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, 8, 8, 0, GL_LUMINANCE, GL_UNSIGNED_SHORT, texDat);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 8, 8, 0, GL_RGBA, GL_UNSIGNED_BYTE, texDat);
 
         glMatrixMode(GL_PROJECTION);
         glOrtho(0, 300, 300, 0, 0, 1);

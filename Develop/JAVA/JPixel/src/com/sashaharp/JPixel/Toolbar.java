@@ -3,16 +3,26 @@ package com.sashaharp.JPixel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeListener;
 
 public class Toolbar extends JFrame {
     public static String currTool = "pencil";
+    public static Color currColor = Color.black;
 
     private JPanel tools = new JPanel(new GridLayout(0, 3));
     private JPanel pencil = new CenteredButton(new ToolBtnAction("pencil", "Single pixel drawing tool", KeyEvent.VK_P));
     private JPanel select = new CenteredButton(new ToolBtnAction("select", "Pixel selection tool", KeyEvent.VK_S));
     private JPanel zoom = new CenteredButton(new ToolBtnAction("zoom", "Zooming tool", KeyEvent.VK_Z));
     private JPanel move = new CenteredButton(new ToolBtnAction("move", "Moving/Paning tool", KeyEvent.VK_M));
+
+    private JPanel colors = new JPanel(new GridLayout(0, 5));
+    private static ColorButton[] cols = new ColorButton[10];
+
+    public static void getCol(int num) {
+        currColor = cols[num].getColor();
+    }
 
     static class CenteredButton extends JPanel {
         private JButton button;
@@ -24,6 +34,28 @@ public class Toolbar extends JFrame {
             button.setMaximumSize(new Dimension(20, 20));
             button.setMinimumSize(new Dimension(20, 20));
             this.add(button);
+        }
+    }
+
+    static class ColorButton extends JPanel {
+        private JButton button;
+        public ColorButton() {
+            button = new JButton("");
+            ActionListener actionListener = new ActionListener() {
+                public void actionPerformed(ActionEvent actionEvent) {
+                    Color initialBackground = button.getBackground();
+                    Color background = JColorChooser.showDialog(null, "JColorChooser", initialBackground);
+                    if (background != null) {
+                        button.setBackground(background);
+                        Toolbar.currColor = background;
+                    }
+                }
+            };
+            button.addActionListener(actionListener);
+            this.add(button, BorderLayout.CENTER);
+        }
+        public Color getColor() {
+            return button.getBackground();
         }
     }
 
@@ -53,7 +85,13 @@ public class Toolbar extends JFrame {
 
         this.add(tools);
 
-        this.setSize(200, 600);
+        for(int n = 0; n < 10; n++) {
+            cols[n] = new ColorButton();
+            colors.add(cols[n]);
+        }
+        this.add(colors);
+
+        this.setSize(200, 800);
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.setVisible(true);
     }

@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="JPixel:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/JPixel_jar</output-path>
+    <root id="archive" name="JPixel.jar">
+      <element id="module-output" name="JPixel" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../lwjgl-lib/lwjgl.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../lwjgl-lib/lwjgl-stb.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../lwjgl-lib/lwjgl-glfw.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../lwjgl-lib/lwjgl-assimp.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../lwjgl-lib/lwjgl-openal.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../lwjgl-lib/lwjgl-opengl.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../lwjgl-lib/lwjgl-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../lwjgl-lib/lwjgl-stb-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../lwjgl-lib/lwjgl-glfw-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../lwjgl-lib/lwjgl-assimp-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../lwjgl-lib/lwjgl-openal-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../lwjgl-lib/lwjgl-opengl-natives-windows.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
