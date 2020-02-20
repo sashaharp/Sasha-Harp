@@ -4,6 +4,7 @@ import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
+import com.sashaharp.Math2D.*;
 
 import javax.tools.Tool;
 import java.nio.*;
@@ -17,42 +18,14 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 public class Main {
 
-    private int[] texDat = new int[64];
-    private int tex;
-
-    static class Vec2 {
-        float x;
-        float y;
-        public Vec2(float x, float y) {
-            this.x = x;
-            this.y = y;
-        }
-        public void rotate(float alpha) {
-            float tx = x * (float)Math.cos(alpha) - y * (float)Math.sin(alpha);
-            float ty = x * (float)Math.sin(alpha) + y * (float)Math.cos(alpha);
-            x = tx;
-            y = ty;
-        }
-        public void stretch(float factor) {
-            x *= factor;
-            y *= factor;
-        }
-        public void translate(float xoffset, float yoffset) {
-            x += xoffset;
-            y += yoffset;
-        }
-        public float length() {
-            return (float)Math.sqrt(x*x + y*y);
-        }
-    }
-
     // The window handle
     private long window;
 
-    private Vec2 p00 = new Vec2(0, 0);
-    private Vec2 p01 = new Vec2(0, 1);
-    private Vec2 p11 = new Vec2(1, 1);
-    private Vec2 p10 = new Vec2(1, 0);
+    private Vector3f p00 = new Vector3f(0, 0);
+    private Vector3f p01 = new Vector3f(0, 1);
+    private Vector3f p11 = new Vector3f(1, 1);
+    private Vector3f p10 = new Vector3f(1, 0);
+    private Matrix3f transformation = new Matrix3f();
     private int winWidth = 300;
     private int winHeight = 300;
     private boolean control = false;
@@ -62,6 +35,11 @@ public class Main {
     private float mouseY = 0;
     private boolean isInit = true;
     private boolean shutdown = false;
+
+    private short picWidth = 8;
+    private short picHeight = 8;
+    private short[] texDat = new short[picWidth * picHeight];
+    int tex;
 
     public void run() {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -158,13 +136,13 @@ public class Main {
 
         glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
             if(button == GLFW_MOUSE_BUTTON_LEFT && !alt && !control && !shift) {
-                drawPixel();
             }else if(button == GLFW_MOUSE_BUTTON_RIGHT && control && alt) {
                 p00 = new Vec2(0, 0);
                 p01 = new Vec2(0, 1);
                 p11 = new Vec2(1, 1);
                 p10 = new Vec2(1, 0);
             }
+                drawPixel();
         });
 
         glfwSetScrollCallback(window, (window, xoffset, yoffset) -> {
@@ -211,40 +189,44 @@ public class Main {
     }
 
     private void movePic(float x, float y) {
-        p00.translate(x, y);
-        p01.translate(x, y);
-        p11.translate(x, y);
-        p10.translate(x, y);
+        transformation.apply(Matrix3f.Translation(x, y));
+        applyTransform();
     }
 
     private void zoomPic(float factor) {
-        p00.translate(-mouseX, -mouseY);
-        p00.stretch(1/(1+factor));
-        p00.translate(mouseX, mouseY);
-        p01.translate(-mouseX, -mouseY);
-        p01.stretch(1/(1+factor));
-        p01.translate(mouseX, mouseY);
-        p11.translate(-mouseX, -mouseY);
-        p11.stretch(1/(1+factor));
-        p11.translate(mouseX, mouseY);
-        p10.translate(-mouseX, -mouseY);
-        p10.stretch(1/(1+factor));
-        p10.translate(mouseX, mouseY);
+        transformation.apply(Matrix3f.Translation(-mouseX, -mouseY));
+        transformation.apply(Matrix3f.Scaling(1f/(1+factor),1f/(1+factor)));
+        transformation.apply(Matrix3f.Translation(mouseX, mouseY));
+        applyTransform();
     }
 
     private void rotatePic(float alpha) {
-        p00.translate(-mouseX, -mouseY);
-        p00.rotate(alpha);
-        p00.translate(mouseX, mouseY);
-        p01.translate(-mouseX, -mouseY);
-        p01.rotate(alpha);
-        p01.translate(mouseX, mouseY);
-        p11.translate(-mouseX, -mouseY);
-        p11.rotate(alpha);
-        p11.translate(mouseX, mouseY);
-        p10.translate(-mouseX, -mouseY);
-        p10.rotate(alpha);
-        p10.translate(mouseX, mouseY);
+        transformation.apply(Matrix3f.Translation(-0.5f, -0.5f));
+        transformation.apply(Matrix3f.Rotation(alpha));
+        transformation.apply(Matrix3f.Translation(0.5f, 0.5f));
+        applyTransform();
+    }
+
+    private void applyTransform() {
+        p00 = new Vector3f(0, 0) ;
+        p00.apply(transformation);
+        p10 = new Vector3f(1, 0) ;
+        p10.apply(transformation);
+        p11 = new Vector3f(1, 1) ;
+        p11.apply(transformation);
+        p01 = new Vector3f(0, 1) ;
+        p01.apply(transformation);
+    }
+
+    private void drawAction() {
+        Vector3f mouseVec = new Vector3f(mouseX, mouseY);
+        mouseVec.apply(Matrix3f.Inverse(transformation));
+        mouseVec.x *= picWidth;
+        mouseVec.y *= picHeight;
+        texDat[((int)mouseVec.y)*picWidth + ((int)mouseVec.x)] = 127;
+
+        glBindTexture(GL_TEXTURE_2D, tex);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, 8, 8, 0, GL_LUMINANCE, GL_UNSIGNED_SHORT, texDat);
     }
 
     private void drawPixel() {
