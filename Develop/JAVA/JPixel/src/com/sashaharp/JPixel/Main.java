@@ -38,7 +38,7 @@ public class Main {
 
     private short picWidth = 8;
     private short picHeight = 8;
-    private short[] texDat = new short[picWidth * picHeight];
+    private int[] texDat = new int[picWidth * picHeight];
     int tex;
 
     public void run() {
@@ -136,13 +136,14 @@ public class Main {
 
         glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
             if(button == GLFW_MOUSE_BUTTON_LEFT && !alt && !control && !shift) {
+                drawAction();
             }else if(button == GLFW_MOUSE_BUTTON_RIGHT && control && alt) {
-                p00 = new Vec2(0, 0);
-                p01 = new Vec2(0, 1);
-                p11 = new Vec2(1, 1);
-                p10 = new Vec2(1, 0);
+                transformation = new Matrix3f();
+                p00 = new Vector3f(0, 0);
+                p01 = new Vector3f(0, 1);
+                p11 = new Vector3f(1, 1);
+                p10 = new Vector3f(1, 0);
             }
-                drawPixel();
         });
 
         glfwSetScrollCallback(window, (window, xoffset, yoffset) -> {
@@ -223,25 +224,10 @@ public class Main {
         mouseVec.apply(Matrix3f.Inverse(transformation));
         mouseVec.x *= picWidth;
         mouseVec.y *= picHeight;
-        texDat[((int)mouseVec.y)*picWidth + ((int)mouseVec.x)] = 127;
+        if(((int)mouseVec.y)*picWidth + ((int)mouseVec.x) < picWidth * picHeight)
+            texDat[((int)mouseVec.y)*picWidth + ((int)mouseVec.x)] = 0xFF000000 | Toolbar.currColor.getRed() | Toolbar.currColor.getGreen()<<8 | Toolbar.currColor.getBlue()<<16;
 
         glBindTexture(GL_TEXTURE_2D, tex);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, 8, 8, 0, GL_LUMINANCE, GL_UNSIGNED_SHORT, texDat);
-    }
-
-    private void drawPixel() {
-        Vec2 mP = new Vec2(mouseX, mouseY);
-        mP.translate(-p00.x, -p00.y);
-        float delta = (float)Math.asin((p01.y-p00.y)/(new Vec2(p01.x-p00.x, p01.y-p00.y)).length());
-        mP.rotate(delta);
-        mP.stretch(1/(p11.x - p00.x));
-        int xOff = (int)(mP.x * 8);
-        int yOff = (int)(mP.y * 8);
-        if(8*yOff+xOff >=0 && 8*yOff+xOff < 64)
-            texDat[8*yOff+xOff] = 0xFF000000 | Toolbar.currColor.getRed() | Toolbar.currColor.getGreen()<<8 | Toolbar.currColor.getBlue()<<16;
-        glBindTexture(GL_TEXTURE_2D, tex);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 8, 8, 0, GL_RGBA, GL_UNSIGNED_BYTE, texDat);
     }
 
