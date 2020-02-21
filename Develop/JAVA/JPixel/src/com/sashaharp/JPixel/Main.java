@@ -1,12 +1,17 @@
 package com.sashaharp.JPixel;
 
+import com.sun.imageio.plugins.png.PNGImageWriter;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 import com.sashaharp.Math2D.*;
 
+import javax.imageio.ImageIO;
 import javax.tools.Tool;
+import java.awt.image.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.*;
 
 import static org.lwjgl.glfw.Callbacks.*;
@@ -20,6 +25,7 @@ public class Main {
 
     // The window handle
     private long window;
+    public static Main obj;
 
     private Vector3f p00 = new Vector3f(0, 0);
     private Vector3f p01 = new Vector3f(0, 1);
@@ -36,10 +42,11 @@ public class Main {
     private boolean isInit = true;
     private boolean shutdown = false;
 
-    private short picWidth = 8;
-    private short picHeight = 8;
+    private int picWidth = 8;
+    private int picHeight = 8;
     private int[] texDat = new int[picWidth * picHeight];
-    int tex;
+    private int tex;
+    private String picPath = "";
 
     public void run() {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -109,9 +116,9 @@ public class Main {
             if (key == GLFW_KEY_7)
                 Toolbar.getCol(7);
             if (key == GLFW_KEY_8)
-                Toolbar.getCol(8);
+                saveImage();//Toolbar.getCol(8);
             if (key == GLFW_KEY_9)
-                Toolbar.getCol(9);
+                loadImage("C:\\Users\\Admin\\Documents\\test.png");//Toolbar.getCol(9);
             if ( key == GLFW_KEY_LEFT_CONTROL || key == GLFW_KEY_RIGHT_CONTROL)
                 if (action == GLFW_PRESS)
                     control = true;
@@ -189,6 +196,37 @@ public class Main {
         glfwShowWindow(window);
     }
 
+    public boolean loadImage(String path) {
+        try {
+            BufferedImage im = ImageIO.read(new File(path));
+            texDat = im.getRGB(0, 0, im.getWidth(), im.getHeight(), null, 0, im.getWidth());
+            picPath = path;
+            picWidth = im.getWidth();
+            picHeight = im.getHeight();
+            transformation = Matrix3f.Identity();
+            applyTransform();
+            glBindTexture(GL_TEXTURE_2D, tex);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, picWidth, picHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, texDat);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean saveImage() {
+        try {
+            DataBuffer rgb = new DataBufferInt(texDat, texDat.length);
+            WritableRaster raster = Raster.createPackedRaster(rgb, picWidth, picHeight, picWidth, new int[]{0xff0000, 0xff00, 0xff, 0xff000000}/*r,g,b,a masks*/, null);
+            BufferedImage img = new BufferedImage(ColorModel.getRGBdefault(), raster, false, null);
+            ImageIO.write(img, "png", new File(picPath));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     private void movePic(float x, float y) {
         transformation.apply(Matrix3f.Translation(x, y));
         applyTransform();
@@ -228,7 +266,7 @@ public class Main {
             texDat[((int)mouseVec.y)*picWidth + ((int)mouseVec.x)] = 0xFF000000 | Toolbar.currColor.getRed() | Toolbar.currColor.getGreen()<<8 | Toolbar.currColor.getBlue()<<16;
 
         glBindTexture(GL_TEXTURE_2D, tex);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 8, 8, 0, GL_RGBA, GL_UNSIGNED_BYTE, texDat);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, picWidth, picHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, texDat);
     }
 
     private void loop() {
@@ -249,7 +287,7 @@ public class Main {
         glBindTexture(GL_TEXTURE_2D, tex);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 8, 8, 0, GL_RGBA, GL_UNSIGNED_BYTE, texDat);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, picWidth, picHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, texDat);
 
         glMatrixMode(GL_PROJECTION);
         glOrtho(0, 300, 300, 0, 0, 1);
@@ -288,7 +326,8 @@ public class Main {
             }
         };
         r.run();
-        new Main().run();
+        obj = new Main();
+        obj.run();
     }
 
 }
