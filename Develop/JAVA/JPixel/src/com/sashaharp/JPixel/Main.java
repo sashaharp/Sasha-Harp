@@ -25,7 +25,6 @@ public class Main {
 
     // The window handle
     private long window;
-    public static Main obj;
 
     private Vector3f p00 = new Vector3f(0, 0);
     private Vector3f p01 = new Vector3f(0, 1);
@@ -263,7 +262,7 @@ public class Main {
         mouseVec.x *= picWidth;
         mouseVec.y *= picHeight;
         if(((int)mouseVec.y)*picWidth + ((int)mouseVec.x) < picWidth * picHeight)
-            texDat[((int)mouseVec.y)*picWidth + ((int)mouseVec.x)] = 0xFF000000 | Toolbar.currColor.getRed() | Toolbar.currColor.getGreen()<<8 | Toolbar.currColor.getBlue()<<16;
+            texDat[((int)mouseVec.y)*picWidth + ((int)mouseVec.x)] = 0xFF000000 | DataSharing.currColor.getRed() | DataSharing.currColor.getGreen()<<8 | DataSharing.currColor.getBlue()<<16;
 
         glBindTexture(GL_TEXTURE_2D, tex);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, picWidth, picHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, texDat);
@@ -326,8 +325,7 @@ public class Main {
             }
         };
         r.run();
-        obj = new Main();
-        obj.run();
+        new Main().run();
     }
 
 }

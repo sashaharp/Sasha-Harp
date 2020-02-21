@@ -8,8 +8,6 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeListener;
 
 public class Toolbar extends JFrame {
-    public static String currTool = "pencil";
-    public static Color currColor = Color.black;
 
     private JPanel tools = new JPanel(new GridLayout(0, 3));
     private JPanel pencil = new CenteredButton(new ToolBtnAction("pencil", "Single pixel drawing tool", KeyEvent.VK_P));
@@ -21,7 +19,7 @@ public class Toolbar extends JFrame {
     private static ColorButton[] cols = new ColorButton[10];
 
     public static void getCol(int num) {
-        currColor = cols[num].getColor();
+        DataSharing.currColor = cols[num].getColor();
     }
 
     static class CenteredButton extends JPanel {
@@ -47,7 +45,7 @@ public class Toolbar extends JFrame {
                     Color background = JColorChooser.showDialog(null, "JColorChooser", initialBackground);
                     if (background != null) {
                         button.setBackground(background);
-                        Toolbar.currColor = background;
+                        DataSharing.currColor = background;
                     }
                 }
             };
@@ -69,7 +67,7 @@ public class Toolbar extends JFrame {
         }
         @Override
         public void actionPerformed(ActionEvent e) {
-            Toolbar.currTool = name;
+            DataSharing.currTool = name;
         }
     }
 
