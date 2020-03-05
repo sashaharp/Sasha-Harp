@@ -1,0 +1,134 @@
+<html>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        var canvas, ctx, flag = false,
+            prevX = 0,
+            currX = 0,
+            prevY = 0,
+            currY = 0,
+            dot_flag = false;
+        var canvas2, ctx2;
+        var strokeBeginX = 0, strokeBeginY = 0, strokeEndX = 0, strokeEndY = 0;
+        var col = "black", width = 1;
+
+        function init() {
+            canvas = document.getElementById('can');
+            ctx = canvas.getContext("2d");
+            canvas2 = document.getElementById('can2');
+            ctx2 = canvas2.getContext("2d");
+            w = canvas.width;
+            h = canvas.height;
+            canvas.addEventListener("mousemove", function (e) {
+                findxy('move', e);
+            }, false);
+            canvas.addEventListener("mousedown", function (e) {
+                findxy('down', e);
+            }, false);
+            canvas.addEventListener("mouseup", function (e) {
+                findxy('up', e);
+            }, false);
+            canvas.addEventListener("mouseout", function (e) {
+                findxy('up', e);
+            }, false);
+        }
+        
+        var toSend = [];
+
+        function draw() {
+            ctx.beginPath();
+            ctx.moveTo(prevX, prevY);
+            ctx.lineTo(currX, currY);
+            ctx.strokeStyle = col;
+            ctx.lineWidth = width;
+            ctx.stroke();
+            ctx.closePath();
+
+            var x1 = prevX;
+            var x2 = currX;
+            var y1 = prevY;
+            var y2 = currY;
+            var stepNum = Math.max(Math.sqrt((x2-x1)^2+(y2-y1)^2)*2, 1);
+            var xstep = (x2-x1) / stepNum;
+            var ystep = (y2-y1) / stepNum;
+            for(var n = 0; n <= stepNum; n++) {
+                if(toSend.length==0 || toSend[toSend.length-1][0] != Math.floor(x1 + xstep*n) || toSend[toSend.length-1][1] != Math.floor(y1 + ystep*n)) {
+                    toSend[toSend.length] = [Math.floor(x1 + xstep*n), Math.floor(y1 + ystep*n)];
+                }
+            }
+        }
+
+        function erase() {
+            if(confirm("Want to clear")) {
+                ctx.clearRect(0, 0, w, h);
+            }
+        }
+
+        function save() {
+            var dataURL = canvas.toDataURL();
+        }
+
+        function findxy(res, e) {
+            if (res == "down") {
+                prevX = currX;
+                prevY = currY;
+                strokeBeginX = currX;
+                strokeBeginY = currY;
+                currX = e.clientX - canvas.getBoundingClientRect().left;
+                currY = e.clientY - canvas.getBoundingClientRect().top;
+                flag = true;
+                dot_flag = true;
+                if (dot_flag) {
+                    ctx.beginPath();
+                    ctx.fillStyle = col;
+                    ctx.fillRect(currX, currY, 1, 1);
+                    ctx.closePath();
+                    dot_flag = false;
+                }
+            } else if (res == "up") {
+                if(flag) {
+                    strokeEndX = currX;
+                    strokeEndY = currY;
+                    sendStroke();
+                    toSend = [];
+                }
+                flag = false;
+            } else if (res == "move") {
+                if (flag) {
+                    prevX = currX;
+                    prevY = currY;
+                    currX = e.clientX - canvas.getBoundingClientRect().left;
+                    currY = e.clientY - canvas.getBoundingClientRect().top;
+                    draw();
+                }
+            }
+        }
+
+        function sendStroke() {
+            $.ajax({
+                type: "POST",
+                url: "transform.php",
+                data: {
+                    img: toSend
+                }
+            }).done(function(o) {
+                if(o != "X") {
+                    var res = o.split("CB")[1].split(" ");
+                    console.log(res);
+                    ctx2.beginPath();
+                    ctx2.moveTo(parseInt(res[0].split(",")[0]), parseInt(res[0].split(",")[1]));
+                    ctx2.bezierCurveTo(parseInt(res[1].split(",")[0]), parseInt(res[1].split(",")[1]), parseInt(res[2].split(",")[0]), parseInt(res[2].split(",")[1]), parseInt(res[3].split(",")[0]), parseInt(res[3].split(",")[1]));
+                    ctx2.strokeStyle = "red";
+                    ctx2.lineWidth = 1;
+                    ctx2.stroke();
+                    ctx.clearRect(0, 0, w, h);
+                    ctx.drawImage(canvas2, 0, 0);
+                    console.log(toSend);
+                }
+            });
+        }
+    </script>
+    <body onload="init()">
+        <canvas id="can" width="200" height="200" style="position:absolute;top:10%;left:10%;border:2px solid;"></canvas>
+        <canvas id="can2" width="200" height="200" style="display:none"></canvas>
+    </body>
+<html>
